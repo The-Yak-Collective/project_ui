@@ -22,9 +22,9 @@ HOMEDIR="/home/yak"
 load_dotenv(HOMEDIR+"/"+'.env')
 
 
-@client.event #needed since it takes time to connect to discord
+@bot.event #needed since it takes time to connect to discord
 async def on_ready(): 
-    print('We have logged in as {0.user}'.format(client),  client.guilds)
+    print('We have logged in as {0.user}'.format(bot),  bot.guilds)
     return
 
 
@@ -32,7 +32,7 @@ def allowed(x,y): #is x allowed to play with item created by y
 #permissions - some activities can only be done by yakshaver, etc. or by person who initiated action
     if x==y: #same person. setting one to zero will force role check
         return True
-    mid=client.guilds[0].get_member(message.author.id)
+    mid=bot.guilds[0].get_member(message.author.id)
     r=[x.name for x in mid.roles]
     if 'yakshaver' in r or 'yakherder' in r: #for now, both roles are same permissions
         return True
@@ -41,7 +41,7 @@ def allowed(x,y): #is x allowed to play with item created by y
 
 @bot.event 
 async def on_message(message): 
-    if message.author == client.user:
+    if message.author == bot.user:
         return #ignore own messages to avoid loops
 
     dmtarget=await dmchan(message.author.id) #build backchannel to user, so we can choose to not answer in general channel
@@ -76,14 +76,14 @@ print("added:",bot.add_command(bottest))
 
 async def dmchan(t):
 #create DM channel betwen bot and user
-    target=client.get_user(t)
+    target=bot.get_user(t)
     if (not target): 
         print("unable to find user and create dm",flush=True)
     return target
     target=target.dm_channel
     if (not target): 
         print("need to create dm channel",flush=True)
-        target=await client.get_user(t).create_dm()
+        target=await bot.get_user(t).create_dm()
     return target
 
 async def splitsend(ch,st,codeformat):
