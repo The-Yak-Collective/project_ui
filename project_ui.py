@@ -16,7 +16,7 @@ from discord_project_ui import *
 HOMEDIR="/home/yak"
 
 
-load_dotenv(HOMDIR+"/"+'.env')
+load_dotenv(HOMEDIR+"/"+'.env')
 
 
 @client.event #needed since it takes time to connect to discord
