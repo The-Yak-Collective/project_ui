@@ -70,7 +70,7 @@ async def bottest(ctx):
     await splitsend(ctx.message.channel,s,False)
     return
     
-bot.add_command(bottest)
+print("added:",bot.add_command(bottest))
 
 
 
