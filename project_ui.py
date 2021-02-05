@@ -11,11 +11,12 @@ import datetime
 from dotenv import load_dotenv
 
 
-from discord_iamz1 import *
+from discord_project_ui import *
+
+HOMEDIR="/home/yak"
 
 
-
-load_dotenv('.env')
+load_dotenv(HOMDIR+"/"+'.env')
 
 
 @client.event #needed since it takes time to connect to discord
@@ -49,10 +50,9 @@ async def on_message(message):
 		
     if message.content.startswith("$z1help"):
         s='''
-$z1help               this message
-$z1test               a test message
+$project_uihelp               this message
+$project_uitest               a test message
 
-go to https://roamresearch.com/#/app/ArtOfGig/page/iBLdEt5Ji to see more about z1 yak rover project
         '''
         await splitsend(message.channel,s,True)
         return
@@ -89,5 +89,5 @@ async def splitsend(ch,st,codeformat):
             await ch.send(st[0:x])
         await splitsend(ch,st[x+1:],codeformat)
 
-discord_token=os.getenv('IAMZ1_DISCORD_KEY')
+discord_token=os.getenv('PROJECT_UI_DISCORD_KEY')
 client.run(discord_token) 
