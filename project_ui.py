@@ -39,7 +39,7 @@ def allowed(x,y): #is x allowed to play with item created by y
     return False
 
 
-#@bot.event 
+#@bot.event #seems event eats the events that command uses. but it is not really needed, either
 async def don_message(message): 
     if message.author == bot.user:
         return #ignore own messages to avoid loops
@@ -56,14 +56,14 @@ maybe !!! is correct prefeix. maybe bottest
         return
     return
 
-@bot.command()
+@bot.command(name='uitest', description='also a test response')
 async def project_uitest(ctx):
     s='this is a test response from project_ui bot in bot mode'
     print('got here')
     await splitsend(ctx.message.channel,s,False)
     return
     
-@commands.command()
+@commands.command(name='bottest', description='shows a test message')
 async def bottest(ctx):
     s='this is a another test response from project_ui bot in bot mode'
     print('and got here')
