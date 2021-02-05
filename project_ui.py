@@ -41,14 +41,14 @@ async def on_message(message):
     if message.author == client.user:
         return #ignore own messages to avoid loops
 
-    dmtarget=await dmchan(message.author.id) #build backchannel to user, so we can choose to  not answer in general channel
+    dmtarget=await dmchan(message.author.id) #build backchannel to user, so we can choose to not answer in general channel
 
-    if message.content.startswith("$z1test"):
+    if message.content.startswith("$project_uitest"):
         s='this is a test response from z1 rover bot'
         await splitsend(message.channel,s,False)
         return
 		
-    if message.content.startswith("$z1help"):
+    if message.content.startswith("$project_uihelp"):
         s='''
 $project_uihelp               this message
 $project_uitest               a test message
