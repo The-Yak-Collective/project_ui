@@ -39,8 +39,8 @@ def allowed(x,y): #is x allowed to play with item created by y
     return False
 
 
-@client.event 
-async def on_message(message): 
+#@client.event 
+async def don_message(message): 
     if message.author == client.user:
         return #ignore own messages to avoid loops
 
@@ -104,4 +104,4 @@ async def splitsend(ch,st,codeformat):
         await splitsend(ch,st[x+1:],codeformat)
 
 discord_token=os.getenv('PROJECT_UI_DISCORD_KEY')
-client.run(discord_token) 
+bot.run(discord_token) 
