@@ -54,11 +54,10 @@ $project_uitest               a test message
     return
 
 @bot.command()
-async def test(ctx):
-    if message.content.startswith("$project_uitest"):
-        s='this is a test response from project_ui bot'
-        await splitsend(ctx.message.channel,s,False)
-        return
+async def project_uitest(ctx):
+    s='this is a test response from project_ui bot in bot mode'
+    await splitsend(ctx.message.channel,s,False)
+    return
 		
 
 
