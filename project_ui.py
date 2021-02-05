@@ -56,14 +56,14 @@ maybe !!! is correct prefeix. maybe bottest
         return
     return
 
-@bot.command(name='uitest', description='also a test response')
+@bot.command(name='uitest', help='also a test response')
 async def project_uitest(ctx):
     s='this is a test response from project_ui bot in bot mode'
     print('got here')
     await splitsend(ctx.message.channel,s,False)
     return
     
-@commands.command(name='bottest', description='shows a test message')
+@commands.command(name='bottest', help='shows a test message')
 async def bottest(ctx):
     s='this is a another test response from project_ui bot in bot mode'
     print('and got here')
