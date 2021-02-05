@@ -9,7 +9,8 @@ import time
 import datetime
 
 from dotenv import load_dotenv
-
+from discord.ext import commands
+bot = commands.Bot(command_prefix='$')
 
 from discord_project_ui import *
 
@@ -42,12 +43,6 @@ async def on_message(message):
         return #ignore own messages to avoid loops
 
     dmtarget=await dmchan(message.author.id) #build backchannel to user, so we can choose to not answer in general channel
-
-    if message.content.startswith("$project_uitest"):
-        s='this is a test response from z1 rover bot'
-        await splitsend(message.channel,s,False)
-        return
-		
     if message.content.startswith("$project_uihelp"):
         s='''
 $project_uihelp               this message
@@ -57,6 +52,14 @@ $project_uitest               a test message
         await splitsend(message.channel,s,True)
         return
     return
+
+@bot.command()
+async def test(ctx):
+    if message.content.startswith("$project_uitest"):
+        s='this is a test response from project_ui bot'
+        await splitsend(ctx.message.channel,s,False)
+        return
+		
 
 
 
