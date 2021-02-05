@@ -56,9 +56,18 @@ $project_uitest               a test message
 @bot.command()
 async def project_uitest(ctx):
     s='this is a test response from project_ui bot in bot mode'
+    print('got here')
     await splitsend(ctx.message.channel,s,False)
     return
-		
+    
+@commands.command()
+async def bottest(ctx):
+    s='this is a another test response from project_ui bot in bot mode'
+    print('and got here')
+    await splitsend(ctx.message.channel,s,False)
+    return
+    
+bot.add_command(bottest)
 
 
 
