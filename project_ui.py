@@ -37,8 +37,8 @@ def allowed(x,y): #is x allowed to play with item created by y
     return False
 
 
-@client.event 
-async def on_message(message): 
+#@client.event 
+async def don_message(message): 
     if message.author == client.user:
         return #ignore own messages to avoid loops
 
