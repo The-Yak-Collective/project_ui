@@ -10,7 +10,7 @@ import datetime
 
 from dotenv import load_dotenv
 from discord.ext import commands
-bot = commands.Bot(command_prefix='$')
+bot = commands.Bot(command_prefix='?')
 
 from discord_project_ui import *
 
