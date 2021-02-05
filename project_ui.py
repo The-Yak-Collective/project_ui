@@ -10,7 +10,7 @@ import datetime
 
 from dotenv import load_dotenv
 from discord.ext import commands
-bot = commands.Bot(command_prefix='?')
+bot = commands.Bot(command_prefix='!!!')
 
 from discord_project_ui import *
 
@@ -47,6 +47,7 @@ async def don_message(message):
         s='''
 $project_uihelp               this message
 $project_uitest               a test message
+maybe !!! is correct prefeix. maybe bottest
 
         '''
         await splitsend(message.channel,s,True)
