@@ -1,5 +1,5 @@
-#discord bot to act as interface for z1 yak rover
-#use GIGAYAK_DISCORD_KEY as an env variable - the key for discord bot. needs read/write permission to channels
+#discord bot to act as UI for projects based on jordans(?) idea that we have a message for each project
+#use PROJECT_UI_DISCORD_KEY as an env variable - the key for discord bot. needs read/write permission to channels
 
 #from discord.ext import tasks, commands
 import discord
@@ -11,23 +11,20 @@ import datetime
 from dotenv import load_dotenv
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='!!!')
-print('bot:',bot)
-
-from discord_project_ui import *
+from discord_project_ui import * #including bot
 
 HOMEDIR="/home/yak"
 
 
 load_dotenv(HOMEDIR+"/"+'.env')
-
+TWEAKS_CHAN=705512721847681035 #temporary
 
 @bot.event #needed since it takes time to connect to discord
 async def on_ready(): 
     print('We have logged in as {0.user}'.format(bot),  bot.guilds)
     return
 
-
+#probbaly change to a "is_check()" type function
 def allowed(x,y): #is x allowed to play with item created by y
 #permissions - some activities can only be done by yakshaver, etc. or by person who initiated action
     if x==y: #same person. setting one to zero will force role check
@@ -70,9 +67,27 @@ async def bottest(ctx):
     print('and got here')
     await splitsend(ctx.message.channel,s,False)
     return
-    
-print("added:",bot.add_command(bottest))
 
+
+print("added:",bot.add_command(bottest))#just to see if it works
+
+
+@bot.command(name='listchans', help='list project channels')
+async def listchans(ctx):
+    x=await bot.guilds[0].fetch_channels().flatten()
+    s=[d for d in x if d.catagory=="projects"]
+    print('got to listchans', x,s)
+    await splitsend(ctx.message.channel,s,False)
+    return
+    
+@bot.event
+async def on_raw_reaction_add(x):
+    print('got raw reaction',x, x.channel_id,x.message_id,x.emoji,x.user_id)
+    s='got a reaction {}'.format(x.emoji.name)
+    tweak_chan=bot.get_channel(TWEAK_CHAN)
+    await splitsend(tweak_chan,s,False)
+    return
+    
 
 
 async def dmchan(t):
