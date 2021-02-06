@@ -17,7 +17,7 @@ HOMEDIR="/home/yak"
 
 
 load_dotenv(HOMEDIR+"/"+'.env')
-TWEAKS_CHAN=705512721847681035 #temporary
+TWEAK_CHAN=705512721847681035 #temporary
 
 @bot.event #needed since it takes time to connect to discord
 async def on_ready(): 
@@ -74,7 +74,7 @@ print("added:",bot.add_command(bottest))#just to see if it works
 
 @bot.command(name='listchans', help='list project channels')
 async def listchans(ctx):
-    x=await bot.guilds[0].fetch_channels().flatten()
+    x=await bot.guilds[0].channels().flatten()
     s=[d for d in x if d.catagory=="projects"]
     print('got to listchans', x,s)
     await splitsend(ctx.message.channel,s,False)
