@@ -88,7 +88,7 @@ async def on_raw_reaction_add(x):
     await splitsend(tweak_chan,s,False)
     c=bot.guilds[0].get_channel(x.channel_id)
     m=await c.fetch_message(x.message_id)
-    await x.m.add_reaction(":grinning:")
+    await m.add_reaction(":grinning:")
     return
     
 
