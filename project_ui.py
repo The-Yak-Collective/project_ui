@@ -86,7 +86,9 @@ async def on_raw_reaction_add(x):
     s='got a reaction {} for user {}'.format(x.emoji.name, x.user_id)
     tweak_chan=bot.get_channel(TWEAK_CHAN)
     await splitsend(tweak_chan,s,False)
-    await x.message.add_reaction(":grinning:")
+    c=bot.guilds[0].get_channel(x.channel_id)
+    m=await c.fetch_message(x.message_id)
+    await x.m.add_reaction(":grinning:")
     return
     
 
