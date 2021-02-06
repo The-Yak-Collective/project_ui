@@ -76,7 +76,7 @@ print("added:",bot.add_command(bottest))#just to see if it works
 @bot.command(name='listchans', help='list project channels')
 async def listchans(ctx):
     x=bot.guilds[0].channels
-    s=[d for d in x if (d.category and d.category.name=="projects")]
+    s=[d for d in x if (d.category and d.category.name=="Projects")]
     s1=[d.category.name for d in x if d.category]
     print('got to listchans', x,s, s1)
     await splitsend(ctx.message.channel,s,False)
