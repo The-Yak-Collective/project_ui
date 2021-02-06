@@ -76,7 +76,7 @@ print("added:",bot.add_command(bottest))#just to see if it works
 @bot.command(name='listchans', help='list project channels')
 async def listchans(ctx):
     x=bot.guilds[0].channels
-    s=[d for d in x if d.catagory=="projects"]
+    s=[d for d in x if d.category=="projects"]
     print('got to listchans', x,s)
     await splitsend(ctx.message.channel,s,False)
     return
@@ -90,6 +90,8 @@ async def on_raw_reaction_add(x):
     c=bot.guilds[0].get_channel(x.channel_id)
     m=await c.fetch_message(x.message_id)
     em=emoji.emojize(":fishing_pole:")
+    await m.add_reaction(em)
+    em=emoji.emojize(":grinning_face:")
     await m.add_reaction(em)
     return
     
