@@ -90,6 +90,7 @@ async def on_raw_reaction_add(x):
     await splitsend(tweak_chan,s,False)
     c=bot.guilds[0].get_channel(x.channel_id)
     m=await c.fetch_message(x.message_id)
+    return #no need to randomly add emojis on other's messages
     em=emoji.emojize(":fishing_pole:")
     await m.add_reaction(em)
     em=emoji.emojize(":grinning_face:")
