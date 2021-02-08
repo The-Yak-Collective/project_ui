@@ -41,8 +41,9 @@ async def on_ready():
     await create_or_update_message() #later do it for all messages
     return
 
-@tasks.loop(seconds=120.0) #change to larger number as soon as we see this works. right now at 120, just so we see it happens multiple times. there si a rate limit 5 mess per channel in 5 sec
+@tasks.loop(seconds=60.0) #change to larger number as soon as we see this works. there si a rate limit 5 mess per channel in 5 sec
 async def test_tick():
+    print ("tick")
     await create_or_update_message()
 
 async def create_or_update_message():
