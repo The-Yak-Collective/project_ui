@@ -43,14 +43,15 @@ async def on_ready():
 
 async def create_or_update_message():
     thecontents="blank message updated at {}".format(str(datetime.datetime.utcnow()))
-    m=int(db_c.execute('''select message_id from messages where entry_type=?''',("upcoming",)).fetchone()[0])
+    tmp=db_c.execute('''select message_id from messages where entry_type=?''',("upcoming",)).fetchone()
     c=bot.guilds[0].get_channel(EXP_CHAN)
-    if not m:
+    if not tmp:
         mess=await splitsend(c,thecontents, False)
         db_c.execute('''insert into messages values (NULL,?,?,?,?)''',(m,thecontents,0,"upcoming"))
         conn.commit()
         m=mess.id
     else:
+        m=int(tmp[0])
         mess=await c.fetch_message(m)
     mess.edit(content=thecontents)
     db_c.execute('''UPDATE messages set contents=? where message_id=? ''',(thecontents,m))
