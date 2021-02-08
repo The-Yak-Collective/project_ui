@@ -11,7 +11,7 @@ import emoji
 
 
 from dotenv import load_dotenv
-from discord.ext import commands
+from discord.ext import tasks, commands
 
 from discord_project_ui import * #including bot
 
@@ -40,6 +40,10 @@ async def on_ready():
     checkon_database()
     await create_or_update_message() #later do it for all messages
     return
+
+@tasks.loop(seconds=120.0) #change to larger number as soon as we see this works. right now at 120, just so we see it happens multiple times. there si a rate limit 5 mess per channel in 5 sec
+async def test_tick():
+    await create_or_update_message()
 
 async def create_or_update_message():
     thecontents="blank message updated at {}".format(str(datetime.datetime.utcnow()))
