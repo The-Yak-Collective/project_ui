@@ -54,7 +54,7 @@ async def create_or_update_message():
            stdout=subprocess.PIPE, 
            stderr=subprocess.STDOUT)
     stdout,stderr = out.communicate()
-    thecontents=thecontents+'\n'+str(stdout)
+    thecontents=thecontents+'\n'+str(stdout).replace("\\n",'\n')
     tmp=db_c.execute('''select message_id from messages where entry_type=?''',("upcoming",)).fetchone()
     c=bot.guilds[0].get_channel(EXP_CHAN)
     if not tmp:
