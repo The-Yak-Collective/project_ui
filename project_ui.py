@@ -37,7 +37,7 @@ EXP_CHAN=808415505856594001 #dashboard channel id
 async def on_ready(): 
     print('We have logged in as {0.user}'.format(bot),  bot.guilds)
     checkon_database()
-    async create_or_update_message() #later do it for all messages
+    await create_or_update_message() #later do it for all messages
     return
 
 async def create_or_update_message():
