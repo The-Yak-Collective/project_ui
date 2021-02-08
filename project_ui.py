@@ -27,7 +27,7 @@ def update_upcoming(x,y,z):#x is entry, y is what emoji, z is message id
     return
 
 entries_types={"upcoming":{"txt": "upcoming events","call":update_upcoming,"emojis":[':grinning_face:',':fishing_pole:']}}
-entries=[{"message_id":}]
+entries=[]#array of entries. should build a class
 
 load_dotenv(HOMEDIR+"/"+'.env')
 TWEAK_CHAN=705512721847681035 #temporary
