@@ -46,7 +46,7 @@ async def create_or_update_message():
     c=bot.guilds[0].get_channel(EXP_CHAN)
     if not m:
         mess=await splitsend(c,thecontents, False)
-        db_c.execute('''insert into messages values (NULL,?,?,?,?)''',(m,thecontents,0,"upcoming")
+        db_c.execute('''insert into messages values (NULL,?,?,?,?)''',(m,thecontents,0,"upcoming"))
         conn.commit()
         m=mess.id
     else:
