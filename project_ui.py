@@ -54,7 +54,7 @@ async def create_or_update_message():
         m=int(tmp[0])
         mess=await c.fetch_message(m)
     mess.edit(content=thecontents)
-    db_c.execute('''UPDATE messages set contents=? where message_id=? ''',(thecontents,m))
+    db_c.execute('''UPDATE messages set content=? where message_id=? ''',(thecontents,m))
     
 def checkon_database(): 
 #check if table exists in DB. if not, create it
