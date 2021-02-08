@@ -39,6 +39,7 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(bot),  bot.guilds)
     checkon_database()
     await create_or_update_message() #later do it for all messages
+    test_tick.start()
     return
 
 @tasks.loop(seconds=60.0) #change to larger number as soon as we see this works. there si a rate limit 5 mess per channel in 5 sec
