@@ -9,6 +9,7 @@ import time
 import datetime
 import emoji
 
+
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -41,7 +42,7 @@ async def on_ready():
     return
 
 async def create_or_update_message():
-    thecontents="blank message updated at {}".format(str(datetime.utcnow()))
+    thecontents="blank message updated at {}".format(str(datetime.datetime.utcnow()))
     m=int(db_c.execute('''select message_id from messages where entry_type=?''',("upcoming",)).fetchone()[0])
     c=bot.guilds[0].get_channel(EXP_CHAN)
     if not m:
