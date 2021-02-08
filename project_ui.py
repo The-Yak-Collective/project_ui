@@ -8,6 +8,7 @@ import os
 import time
 import datetime
 import emoji
+import subprocess
 
 
 from dotenv import load_dotenv
@@ -48,7 +49,12 @@ async def test_tick():
     await create_or_update_message()
 
 async def create_or_update_message():
-    thecontents="blank message updated at {}".format(str(datetime.datetime.utcnow()))
+    thecontents="updated at {}".format(str(datetime.datetime.utcnow()))
+    out = subprocess.Popen(['python3',HOMEDIR+'/robot/onboarding_robot/upcoming_command.py'], 
+           stdout=subprocess.PIPE, 
+           stderr=subprocess.STDOUT)
+    stdout,stderr = out.communicate()
+    thecontents=thecontents+'\n'+str(stdout)
     tmp=db_c.execute('''select message_id from messages where entry_type=?''',("upcoming",)).fetchone()
     c=bot.guilds[0].get_channel(EXP_CHAN)
     if not tmp:
