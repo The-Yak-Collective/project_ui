@@ -53,7 +53,7 @@ async def create_or_update_message():
     else:
         m=int(tmp[0])
         mess=await c.fetch_message(m)
-    mess.edit(content=thecontents)
+    await mess.edit(content=thecontents)
     db_c.execute('''UPDATE messages set content=? where message_id=? ''',(thecontents,m))
     
 def checkon_database(): 
