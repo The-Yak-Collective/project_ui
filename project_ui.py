@@ -16,14 +16,51 @@ from discord_project_ui import * #including bot
 
 HOMEDIR="/home/yak"
 
+import sqlite3  #consider , "check_same_thread = False" on sqlite.connect()
+
+conn=sqlite3.connect('/home/yak/robot/project_ui/project_uidatabase.db') #the connection should be global. 
+
+db_c = conn.cursor()
+#need to add some sort of time to trigger update
+
+def update_upcoming(x,y,z):#x is entry, y is what emoji, z is message id
+    return
+
+entries_types={"upcoming":{"txt": "upcoming events","call":update_upcoming,"emojis":[':grinning_face:',':fishing_pole:']}}
+entries=[{"message_id":}]
 
 load_dotenv(HOMEDIR+"/"+'.env')
 TWEAK_CHAN=705512721847681035 #temporary
+EXP_CHAN=808415505856594001 #dashboard channel id
 
 @bot.event #needed since it takes time to connect to discord
 async def on_ready(): 
     print('We have logged in as {0.user}'.format(bot),  bot.guilds)
+    checkon_database()
+    async create_or_update_message() #later do it for all messages
     return
+
+async def create_or_update_message():
+    thecontents="blank message updated at {}".format(str(datetime.utcnow()))
+    m=int(db_c.execute('''select message_id from messages where entry_type=?''',("upcoming",)).fetchone()[0])
+    c=bot.guilds[0].get_channel(EXP_CHAN)
+    if not m:
+        mess=await splitsend(c,thecontents, False)
+        db_c.execute('''insert into messages values (NULL,?,?,?,?)''',(m,thecontents,0,"upcoming")
+        conn.commit()
+        m=mess.id
+    else:
+        mess=await c.fetch_message(m)
+    mess.edit(content=thecontents)
+    db_c.execute('''UPDATE messages set contents=? where message_id=? ''',(thecontents,m))
+    
+def checkon_database(): 
+#check if table exists in DB. if not, create it
+#this function is RIPE for automation, which would also be carried over to "on message"
+    db_c.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name='messages' ''')
+    if db_c.fetchone()[0]!=1:
+        db_c.execute('''CREATE TABLE messages (id INTEGER PRIMARY KEY, message_id int, content text, entry_id integer, entry_type text)''')
+        conn.commit()
 
 #probbaly change to a "is_check()" type function
 def allowed(x,y): #is x allowed to play with item created by y
@@ -115,18 +152,18 @@ async def splitsend(ch,st,codeformat):
 #send messages within discord limit + optional code-type formatting
     if len(st)<1900: #discord limit is 2k and we want some play)
         if codeformat:
-            await ch.send('```'+st+'```')
+            return await ch.send('```'+st+'```')
         else:
-            await ch.send(st)
+            return await ch.send(st)
     else:
         x=st.rfind('\n',0,1900)
         if (x<0):
             x=1900
         if codeformat:
-            await ch.send('```'+st[0:x]+'```')
+            return await ch.send('```'+st[0:x]+'```')
         else:
-            await ch.send(st[0:x])
-        await splitsend(ch,st[x+1:],codeformat)
+            return await ch.send(st[0:x])
+        return await splitsend(ch,st[x+1:],codeformat)
 
 discord_token=os.getenv('PROJECT_UI_DISCORD_KEY')
 bot.run(discord_token) 
