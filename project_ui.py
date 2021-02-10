@@ -115,7 +115,7 @@ async def create_message(c): #c is channel we are working on
     roles=bot.guilds[0].roles
     potential_roles=[r.name for r in roles if (r.name in c.name and len(r.name)>6)]
     potential_roles.sort(key=lambda d: -len(d))
-    print(potential_roles,c.name,re.sub('[\W_\-]','',c.name))
+    print(potential_roles,c.name,re.sub('^[A-Za-z0-9_-]','',c.name))
     #generate content - for now using only local content, later knack or proj
     txt=c.topic
     if not txt:
