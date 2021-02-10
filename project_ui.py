@@ -81,7 +81,7 @@ async def init_bot():
     #not done yet - read existing roles and match to channels
     for c in chanlist:
         await create_message(c)
-    test_tick.cancel() #hope nothing stays hanging...
+    test_tick.cancel() #hope nothing stays hanging... problem if we have two running
     test_tick.start()
     
 async def delete_all_messages(): #for now, only bot messages
