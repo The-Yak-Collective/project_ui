@@ -40,7 +40,7 @@ HOMEDIR="/home/yak"
 import sqlite3 
 
 class Int_Mess:
-    def __init__(self, id=0,name=None,type=None,mess_id=0,update=None,role=None,content=None,emoji=None):
+    def __init__(self, id=0,name=None,type=None,mess_id=0,update=None,role=None,content=None,emoji=None,chan=None):
         self.id=id #ID of the entry; int
         self.name=name # name of teh project/message
         self.type=type #for now "upcoming" or "project"
@@ -53,6 +53,7 @@ class Int_Mess:
     
 
 entries=[]#array of Int_Mess
+message_channels=set()
 
 load_dotenv(HOMEDIR+"/"+'.env')
 TWEAK_CHAN=705512721847681035 #temporary
@@ -65,9 +66,10 @@ async def on_ready():
     return
 
 async def init_bot():
-    global entries
+    global entries,message_channels
     await delete_all_messages()
     entries=[]
+    message_channels=set()
     await create_upcoming_message()
     x=bot.guilds[0].channels
     chanlist=[d for d in x if (d.category and d.category.name=="Projects")]
@@ -78,25 +80,30 @@ async def init_bot():
     test_tick.start()
     
 async def delete_all_messages(): #for now, only bot messages
-    c=bot.guilds[0].get_channel(EXP_CHAN)
     def is_me(m):
         return m.author == bot.user
+    c=bot.guilds[0].get_channel(EXP_CHAN) # switch to below the ###
     deleted = await c.purge(limit=20, check=is_me)
+    return
+    ###for when we actually use more channels
+    for x in message_channels:
+        deleted = await x.purge(limit=20, check=is_me)
     
 async def create_message(c): #c is name of channel we are working on
     thec=bot.guilds[0].get_channel(EXP_CHAN)
+    message_channels.add(thec)
     #await splitsend(thec,'create message {}'.format(c.name),False)
     #identify role
     #generate content - for now using only local content, later knack or proj
     thecontents="project **{0}**\n{1}\n<#{2}>".format(c.name,"no details yet",c.id)
     #generate entry
-    proj_mess=Int_Mess(id=0,type="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project),(":bell_with_slash:",leave_project),(":eye:",detail_project)])
+    proj_mess=Int_Mess(id=0,type="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":no_bell:")),(":eye:",detail_project,emoji.emojize(":eye:"))],chan=thec)
     mess=await splitsend(thec,thecontents, False)
     proj_mess.mess_id=mess.id
     entries.append(proj_mess)
     #add mojis to message
     for x in proj_mess.emoji:
-        em=emoji.emojize(x[0])
+        em=x[2]
         await mess.add_reaction(em)
     pass
 
@@ -144,8 +151,9 @@ def upcoming_contents():
     
 async def create_upcoming_message():
     thecontents=upcoming_contents()
-    upcoming_mess=Int_Mess(id=0,type="upcoming",name="upcoming",update=update_upcoming_message,content=thecontents)
     c=bot.guilds[0].get_channel(EXP_CHAN)
+    upcoming_mess=Int_Mess(id=0,type="upcoming",name="upcoming",update=update_upcoming_message,content=thecontents,chan=c)
+
     mess=await splitsend(c,thecontents, False)
     upcoming_mess.mess_id=mess.id
     entries.append(upcoming_mess)
@@ -154,7 +162,7 @@ async def update_upcoming_message(x):#x is message entry,not used here
     thecontents=upcoming_contents()
     x=[entry for entry in entries if entry.type=="upcoming"]
     x[0].content=thecontents
-    c=bot.guilds[0].get_channel(EXP_CHAN)
+    c=x[0].chan
     mess=await c.fetch_message(x[0].mess_id)
     await mess.edit(content=thecontents)
 
@@ -182,17 +190,16 @@ async def listchans(ctx):
 @bot.event
 async def on_raw_reaction_add(x):
     print('got raw reaction',x, x.channel_id,x.message_id,x.emoji,x.user_id)
-    s='got a reaction {} for user {}'.format(x.emoji.name, x.user_id)
-    tweak_chan=bot.get_channel(TWEAK_CHAN)
+    whichproj=[p for p in entries if p.mess_id==x.message_id]
+    if whichproj==[]:
+        print("not on my messages")
+        return
+    em=[e for e in whichproj[0].emoji if e[2]==x.emoji.name]
+    if em==[]:
+        print("not right kind of emoji", whichproj[0].emoji)
+        return
+    em[1](whichproj[0])
     await splitsend(tweak_chan,s,False)
-    c=bot.guilds[0].get_channel(x.channel_id)
-    m=await c.fetch_message(x.message_id)
-    #change to sending dm accoridng to add/join/details
-    return #no need to randomly add emojis on other's messages
-    em=emoji.emojize(":fishing_pole:")
-    await m.add_reaction(em)
-    em=emoji.emojize(":grinning_face:")
-    await m.add_reaction(em)
     return
     
 
