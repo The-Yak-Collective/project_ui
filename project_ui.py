@@ -115,28 +115,29 @@ async def update_project_message(x):
 #will update project contents, when we have real data to show...
     pass
     
-async def join_project(x,y):
+async def join_project(entry,rawreaction):
 #try to join
-    print("join ",x.name)
-    clicker=bot.guilds[0].get_member(y.user_id)
-    s="{0} tried to join {1}".format(clicker.name, x.name)
+    print("join ",entry.name)
+    clicker=bot.guilds[0].get_member(rawreaction.user_id)
+    print("clicker=", clicker)
+    s="{0} tried to join {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
 
     pass
     
-async def leave_project(x):
+async def leave_project(entry,rawreaction):
 #try to leave
-    print("leave ",x.name)
-    clicker=bot.guilds[0].get_member(y.user_id)
-    s="{0} tried to leave {1}".format(clicker.name, x.name)
+    print("leave ",entry.name)
+    clicker=bot.guilds[0].get_member(rawreaction.user_id)
+    s="{0} tried to leave {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
     pass
     
-async def detail_project(x):
+async def detail_project(entry,rawreaction):
 #try to get details
-    print("details on ",x.name)
-    clicker=bot.guilds[0].get_member(y.user_id)
-    s="{0} tried to get details on {1}".format(clicker.name, x.name)
+    print("details on ",entry.name)
+    clicker=bot.guilds[0].get_member(rawreaction.user_id)
+    s="{0} tried to get details on {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
     pass
 
