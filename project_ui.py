@@ -207,10 +207,10 @@ def upcoming_contents():
            stderr=subprocess.STDOUT)
     stdout,stderr = out.communicate()
     thecontents=thecontents+'\n'+str(stdout,"utf-8").replace("\\n",'\n')
-    return thecontents
+    return thecontents+"\nlink to calendar: https://calendar.google.com/calendar?cid=bzk5NW00MzE3M2Jwc2xtaGg0OW5tcnA1aTRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ"
     
 async def create_upcoming_message():
-    thecontents=upcoming_contents()+"\nlink to calendar: https://calendar.google.com/calendar?cid=bzk5NW00MzE3M2Jwc2xtaGg0OW5tcnA1aTRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ"
+    thecontents=upcoming_contents()
     c=bot.guilds[0].get_channel(EXP_CHAN)
     upcoming_mess=Int_Mess(id=0,typ="upcoming",name="upcoming",update=update_upcoming_message,content=thecontents,chan=c)
 
