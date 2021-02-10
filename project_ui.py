@@ -1,7 +1,26 @@
 #discord bot to act as UI for projects based on jordans(?) idea that we have a message for each project
 #use PROJECT_UI_DISCORD_KEY as an env variable - the key for discord bot. needs read/write permission to channels
 
-#from discord.ext import tasks, commands
+#logic:
+#when run, starts by:
+#   deletes all messages in dashboard
+#   creates new upcoming message
+#   gets list of channels
+#   creates new message for each channel based on channel name and "other data sources" if any. for now, none! later, use $proj interface?
+#   message includes name, blank text) channel (with #) and role:
+#   each "create" also creates a line in the database with channel id and corresponding message id. maybe a list in memory is enough?
+#   read existing roles
+#   create/match (same first 10 chars or whole thing) a role for each channel and add it to list
+#   add three reactions to each message: join and leave and details
+#ongoing:
+#   if new channel created or deleted or name changed, reboot program
+#   if emoji
+#       if on a message id in list
+#           send a dm to that person, with details, if asked
+#           if join, add a role
+#           if leave, remove role
+#   other commands, for now only test
+
 import discord
 import asyncio
 import os
@@ -18,18 +37,21 @@ from discord_project_ui import * #including bot
 
 HOMEDIR="/home/yak"
 
-import sqlite3  #consider , "check_same_thread = False" on sqlite.connect()
+import sqlite3 
 
-conn=sqlite3.connect('/home/yak/robot/project_ui/project_uidatabase.db') #the connection should be global. 
+class Int_Mess:
+    def __init__(id=0,type=None,mess_id=0,update=None,role=None,content="",emoji=[]):
+        id=id #ID of the entry; int
+        type=type #for now "upcoming" or "project"
+        mess_id=mess_id #ID of message in discord; int
+        update=update #function to call to update the message
+        #reaction=reaction #function to call when a reaction is added (clicked)
+        role=role # what role to add or remove
+        content=content #contents of the  message; text
+        emoji=emoji #list of tuples (emojies strings, function to call) to show at bottom of message. default to green_book red_book eye
+    
 
-db_c = conn.cursor()
-#need to add some sort of time to trigger update
-
-def update_upcoming(x,y,z):#x is entry, y is what emoji, z is message id
-    return
-
-entries_types={"upcoming":{"txt": "upcoming events","call":update_upcoming,"emojis":[':grinning_face:',':fishing_pole:']}}
-entries=[]#array of entries. should build a class
+entries=[]#array of Int_Mess
 
 load_dotenv(HOMEDIR+"/"+'.env')
 TWEAK_CHAN=705512721847681035 #temporary
@@ -38,92 +60,92 @@ EXP_CHAN=808415505856594001 #dashboard channel id
 @bot.event #needed since it takes time to connect to discord
 async def on_ready(): 
     print('We have logged in as {0.user}'.format(bot),  bot.guilds)
-    checkon_database()
-    await create_or_update_message() #later do it for all messages
-    test_tick.start()
+    await init_bot() 
     return
+
+async def init_bot():
+    global entries
+    await delete_all_messages()
+    entries=[]
+    create_upcoming_message()
+    x=bot.guilds[0].channels
+    chanlist=[d for d in x if (d.category and d.category.name=="Projects")]
+    #not done yet - read existing roles and match to channels
+    for c in chanlist:
+        await create_message(c)
+    test_tick.cancel() #hope nothing stays hanging...
+    test_tick.start()
+    
+async def delete_all_messages(): #for now, only bot messages
+    c=bot.guilds[0].get_channel(EXP_CHAN)
+    def is_me(m):
+        return m.author == bot.user
+    deleted = await c.purge(limit=20, check=is_me)
+    
+async def create_message(c): #c is name of channel we are working on
+    await splitsend(bot.guilds[0].get_channel(EXP_CHAN),'create message {}'.format(c.name),False)
+    #identify role
+    #generate content - for now using only local content, later knack or proj
+    #generate entry
+    #create actual message
+    #update message ID
+    #adde mojis to message
+    pass
+
+
+@bot.event
+async def on_guild_channel_delete(channel)
+    await init_bot()
+@bot.event
+async def on_guild_channel_create(channel)
+    await init_bot()
+@bot.event
+async def on_guild_channel_update(before, after)
+    await init_bot()
+
 
 @tasks.loop(seconds=600.0) #change to larger number as soon as we see this works. there is a rate limit 5 mess per channel in 5 sec
 async def test_tick():
     #print ("tick")
-    await create_or_update_message()
+    for x in entries:
+        await x.update()
 
-async def create_or_update_message():
+def upcoming_contents():
     thecontents="**updated every 10 min, last at** {} (UTC)".format(datetime.datetime.utcnow().strftime("%H:%M %b, %d %Y"))
     out = subprocess.Popen(['python3',HOMEDIR+'/robot/onboarding_robot/upcoming_command.py'], 
            stdout=subprocess.PIPE, 
            stderr=subprocess.STDOUT)
     stdout,stderr = out.communicate()
     thecontents=thecontents+'\n'+str(stdout,"utf-8").replace("\\n",'\n')
-    tmp=db_c.execute('''select message_id from messages where entry_type=?''',("upcoming",)).fetchone()
-    c=bot.guilds[0].get_channel(EXP_CHAN)
-    if not tmp:
-        mess=await splitsend(c,thecontents, False)
-        db_c.execute('''insert into messages values (NULL,?,?,?,?)''',(mess.id,thecontents,0,"upcoming"))
-        conn.commit()
-        m=mess.id
-    else:
-        m=int(tmp[0])
-        mess=await c.fetch_message(m)
-    await mess.edit(content=thecontents)
-    db_c.execute('''UPDATE messages set content=? where message_id=? ''',(thecontents,m))
-    conn.commit()
+    return thecontents
     
-def checkon_database(): 
-#check if table exists in DB. if not, create it
-#this function is RIPE for automation, which would also be carried over to "on message"
-    db_c.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name='messages' ''')
-    if db_c.fetchone()[0]!=1:
-        db_c.execute('''CREATE TABLE messages (id INTEGER PRIMARY KEY, message_id int, content text, entry_id integer, entry_type text)''')
-        conn.commit()
-
-#probbaly change to a "is_check()" type function
-def allowed(x,y): #is x allowed to play with item created by y
-#permissions - some activities can only be done by yakshaver, etc. or by person who initiated action
-    if x==y: #same person. setting one to zero will force role check
-        return True
-    mid=bot.guilds[0].get_member(message.author.id)
-    r=[x.name for x in mid.roles]
-    if 'yakshaver' in r or 'yakherder' in r: #for now, both roles are same permissions
-        return True
-    return False
+async def create_upcoming_message():
+    thecontents=upcoming_contents()
+    upcoming_mess=Int_Mess(id=0,type="upcoming",update=update_upcoming_message,content=thecontents)
+    c=bot.guilds[0].get_channel(EXP_CHAN)
+    mess=await splitsend(c,thecontents, False)
+    upcoming_mess.mess_id=mess.id
+    entries.append(upcoming_mess)
+        
+async def update_upcoming_message():
+    thecontents=upcoming_contents()
+    x=[entry for entry in entries if entry.type="upcoming"]
+    x[0].content=thecontents
+    c=bot.guilds[0].get_channel(EXP_CHAN)
+    mess=await c.fetch_message(x[0].mess_id)
+    await mess.edit(content=thecontents)
 
 
 #@bot.event #seems event eats the events that command uses. but it is not really needed, either
 # fix is to add await bot.process_commands(message) at the end
-async def don_message(message): 
-    if message.author == bot.user:
-        return #ignore own messages to avoid loops
 
-    dmtarget=await dmchan(message.author.id) #build backchannel to user, so we can choose to not answer in general channel
-    if message.content.startswith("$project_uihelp"):
-        s='''
-$project_uihelp               this message
-$project_uitest               a test message
-maybe !!! is correct prefeix. maybe bottest
-
-        '''
-        await splitsend(message.channel,s,True)
-        return
-    return
-
-@bot.command(name='uitest', help='also a test response')
+@bot.command(name='uitest', help='a test response')
 async def project_uitest(ctx):
     s='this is a test response from project_ui bot in bot mode'
     print('got here')
     await splitsend(ctx.message.channel,s,False)
     return
     
-@commands.command(name='bottest', help='shows a test message')
-async def bottest(ctx):
-    s='this is a another test response from project_ui bot in bot mode'
-    print('and got here')
-    await splitsend(ctx.message.channel,s,False)
-    return
-
-
-print("added:",bot.add_command(bottest))#just to see if it works
-
 
 @bot.command(name='listchans', help='list project channels')
 async def listchans(ctx):
@@ -142,6 +164,7 @@ async def on_raw_reaction_add(x):
     await splitsend(tweak_chan,s,False)
     c=bot.guilds[0].get_channel(x.channel_id)
     m=await c.fetch_message(x.message_id)
+    #change to sending dm accoridng to add/join/details
     return #no need to randomly add emojis on other's messages
     em=emoji.emojize(":fishing_pole:")
     await m.add_reaction(em)
@@ -179,6 +202,17 @@ async def splitsend(ch,st,codeformat):
         else:
             return await ch.send(st[0:x])
         return await splitsend(ch,st[x+1:],codeformat)
+        
+#probbaly change to a "is_check()" type function
+def allowed(x,y): #is x allowed to play with item created by y
+#permissions - some activities can only be done by yakshaver, etc. or by person who initiated action
+    if x==y: #same person. setting one to zero will force role check
+        return True
+    mid=bot.guilds[0].get_member(message.author.id)
+    r=[x.name for x in mid.roles]
+    if 'yakshaver' in r or 'yakherder' in r: #for now, both roles are same permissions
+        return True
+    return False
 
 discord_token=os.getenv('PROJECT_UI_DISCORD_KEY')
 bot.run(discord_token) 
