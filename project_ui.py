@@ -50,6 +50,7 @@ class Int_Mess:
         self.role=role # what role to add or remove
         self.content=content #contents of the  message; text
         self.emoji=emoji #list of tuples (emojies strings, function to call) to show at bottom of message. default to green_book red_book eye
+        self.chan=chan
     
 
 entries=[]#array of Int_Mess
@@ -189,6 +190,8 @@ async def listchans(ctx):
     
 @bot.event
 async def on_raw_reaction_add(x):
+    if (x.user_id == bot.user)
+        return # this happens while buuilding the messages
     print('got raw reaction',x, x.channel_id,x.message_id,x.emoji,x.user_id)
     whichproj=[p for p in entries if p.mess_id==x.message_id]
     if whichproj==[]:
