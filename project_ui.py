@@ -61,6 +61,7 @@ TWEAK_CHAN=705512721847681035 #temporary
 EXP_CHAN=808415505856594001 #dashboard channel id
 PRJ_CHAN=809056759812587520 #ui for projects
 tweak_chan=0
+restart=False #do we restart in the 10 min loop due to change in projects
 
 @bot.event #needed since it takes time to connect to discord
 async def on_ready(): 
@@ -112,7 +113,7 @@ async def create_message(c): #c is name of channel we are working on
     txt=c.topic
     if not txt:
         txt="No description yet"
-    thecontents="project <#{0}>\n{1}".format(c.id,txt)
+    thecontents="<#{0}>\n{1}".format(c.id,txt)
     #generate entry
     proj_mess=Int_Mess(id=0,typ="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:")),(":eye:",detail_project,emoji.emojize(":eye:"))],chan=thec)
     mess=await splitsend(thec,thecontents, False)
@@ -158,20 +159,24 @@ async def detail_project(entry,rawreaction):
 @bot.event
 async def on_guild_channel_delete(channel):
     if channel.category.name=="Projects":
-        await init_bot()
+        restart=True #await init_bot()
 @bot.event
 async def on_guild_channel_create(channel):
     if channel.category.name=="Projects":
-        await init_bot()
+        restart=True #await init_bot()
 @bot.event
 async def on_guild_channel_update(before, after):
     if before.category.name=="Projects" or after.category.name=="Projects":
-        await init_bot()
+        restart=True #await init_bot()
 
 
 @tasks.loop(seconds=600.0) #change to larger number as soon as we see this works. there is a rate limit 5 mess per channel in 5 sec
 async def test_tick():
     #print ("tick")
+    if restart:
+        restart=False
+        await init_bot()
+        return
     for x in entries:
         await x.update(x)
 
