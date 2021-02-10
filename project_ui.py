@@ -67,7 +67,7 @@ async def init_bot():
     global entries
     await delete_all_messages()
     entries=[]
-    create_upcoming_message()
+    await create_upcoming_message()
     x=bot.guilds[0].channels
     chanlist=[d for d in x if (d.category and d.category.name=="Projects")]
     #not done yet - read existing roles and match to channels
