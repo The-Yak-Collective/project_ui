@@ -109,7 +109,10 @@ async def create_message(c): #c is name of channel we are working on
     #identify role - when done, also add to int_mess
     pass
     #generate content - for now using only local content, later knack or proj
-    thecontents="project <#{0}>\n{1}".format(c.id,"no details yet")
+    txt=c.topic
+    if not txt:
+        txt="No description yet"
+    thecontents="project <#{0}>\n{1}".format(c.id,txt)
     #generate entry
     proj_mess=Int_Mess(id=0,typ="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:")),(":eye:",detail_project,emoji.emojize(":eye:"))],chan=thec)
     mess=await splitsend(thec,thecontents, False)
@@ -151,6 +154,7 @@ async def detail_project(entry,rawreaction):
     await splitsend(tweak_chan,s,False)
     pass
 
+#the following need to sleep so if you have multiple changes, it only happens once
 @bot.event
 async def on_guild_channel_delete(channel):
     await init_bot()
