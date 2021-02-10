@@ -40,8 +40,9 @@ HOMEDIR="/home/yak"
 import sqlite3 
 
 class Int_Mess:
-    def __init__(self, id=0,type=None,mess_id=0,update=None,role=None,content=None,emoji=None):
+    def __init__(self, id=0,name=None,type=None,mess_id=0,update=None,role=None,content=None,emoji=None):
         self.id=id #ID of the entry; int
+        self.name=name # name of teh project/message
         self.type=type #for now "upcoming" or "project"
         self.mess_id=mess_id #ID of message in discord; int
         self.update=update #function to call to update the message
@@ -83,15 +84,37 @@ async def delete_all_messages(): #for now, only bot messages
     deleted = await c.purge(limit=20, check=is_me)
     
 async def create_message(c): #c is name of channel we are working on
-    await splitsend(bot.guilds[0].get_channel(EXP_CHAN),'create message {}'.format(c.name),False)
+    thec=bot.guilds[0].get_channel(EXP_CHAN)
+    #await splitsend(thec,'create message {}'.format(c.name),False)
     #identify role
     #generate content - for now using only local content, later knack or proj
+    thecontents="project **{0}**\n{1}\n<#{2}>".format(c.name,"no details yet",c.id)
     #generate entry
-    #create actual message
-    #update message ID
-    #adde mojis to message
+    proj_mess=Int_Mess(id=0,type="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project),(":no_bell:",leave_project),(":eye:",detail_project)])
+    mess=await splitsend(thec,thecontents, False)
+    proj_mess.mess_id=mess.id
+    entries.append(proj_mess)
+    #add mojis to message
+    for x in proj_mess.emoji:
+        em=emoji.emojize(x[0])
+        await mess.add_reaction(em)
     pass
 
+async def update_project_message(x):
+#will update project contents, when we have real data to show...
+    pass
+async def join_project(x):
+    print("join ",x.name)
+#try to join
+    pass
+async def leave_project(x):
+#try to leave
+    print("leave ",x.name)
+    pass
+async def detail_project(x):
+#try to get details
+    print("details on ",x.name)
+    pass
 
 @bot.event
 async def on_guild_channel_delete(channel):
@@ -108,7 +131,7 @@ async def on_guild_channel_update(before, after):
 async def test_tick():
     #print ("tick")
     for x in entries:
-        await x.update()
+        await x.update(x)
 
 def upcoming_contents():
     thecontents="**updated every 10 min, last at** {} (UTC)".format(datetime.datetime.utcnow().strftime("%H:%M %b, %d %Y"))
@@ -121,13 +144,13 @@ def upcoming_contents():
     
 async def create_upcoming_message():
     thecontents=upcoming_contents()
-    upcoming_mess=Int_Mess(id=0,type="upcoming",update=update_upcoming_message,content=thecontents)
+    upcoming_mess=Int_Mess(id=0,type="upcoming",name="upcoming",update=update_upcoming_message,content=thecontents)
     c=bot.guilds[0].get_channel(EXP_CHAN)
     mess=await splitsend(c,thecontents, False)
     upcoming_mess.mess_id=mess.id
     entries.append(upcoming_mess)
         
-async def update_upcoming_message():
+async def update_upcoming_message(x):#x is message entry,not used here
     thecontents=upcoming_contents()
     x=[entry for entry in entries if entry.type=="upcoming"]
     x[0].content=thecontents
