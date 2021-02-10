@@ -49,7 +49,7 @@ class Int_Mess:
         #reaction=reaction #function to call when a reaction is added (clicked)
         self.role=role # what role to add or remove
         self.content=content #contents of the  message; text
-        self.emoji=emoji #list of tuples (emojies strings, function to call) to show at bottom of message. default to green_book red_book eye
+        self.emoji=emoji #list of tuples (emojies strings, function to call, emojized) to show at bottom of message. 
         self.chan=chan
     
 
@@ -59,11 +59,14 @@ message_channels=set()
 load_dotenv(HOMEDIR+"/"+'.env')
 TWEAK_CHAN=705512721847681035 #temporary
 EXP_CHAN=808415505856594001 #dashboard channel id
+tweak_chan=0
 
 @bot.event #needed since it takes time to connect to discord
 async def on_ready(): 
+    global tweak_chan
     print('We have logged in as {0.user}'.format(bot),  bot.guilds)
     await init_bot() 
+    tweak_chan=bot.guilds[0].get_channel(TWEAK_CHAN)
     return
 
 async def init_bot():
@@ -111,17 +114,30 @@ async def create_message(c): #c is name of channel we are working on
 async def update_project_message(x):
 #will update project contents, when we have real data to show...
     pass
-async def join_project(x):
-    print("join ",x.name)
+    
+async def join_project(x,y):
 #try to join
+    print("join ",x.name)
+    clicker=bot.guilds[0].get_member(y.user_id)
+    s="{0} tried to join {1}".format(y.name,clicker.name)
+    await splitsend(tweak_chan,s,False)
+
     pass
+    
 async def leave_project(x):
 #try to leave
     print("leave ",x.name)
+    clicker=bot.guilds[0].get_member(y.user_id)
+    s="{0} tried to leave {1}".format(y.name,clicker.name)
+    await splitsend(tweak_chan,s,False)
     pass
+    
 async def detail_project(x):
 #try to get details
     print("details on ",x.name)
+    clicker=bot.guilds[0].get_member(y.user_id)
+    s="{0} tried to get details on {1}".format(y.name,clicker.name)
+    await splitsend(tweak_chan,s,False)
     pass
 
 @bot.event
@@ -201,8 +217,7 @@ async def on_raw_reaction_add(x):
     if em==[]:
         print("not right kind of emoji", whichproj[0].emoji)
         return
-    em[0][1](whichproj[0])
-    await splitsend(tweak_chan,s,False)
+    await em[0][1](whichproj[0],x)
     return
     
 
