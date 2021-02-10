@@ -40,15 +40,15 @@ HOMEDIR="/home/yak"
 import sqlite3 
 
 class Int_Mess:
-    def __init__(id=0,type=None,mess_id=0,update=None,role=None,content="",emoji=[]):
-        id=id #ID of the entry; int
-        type=type #for now "upcoming" or "project"
-        mess_id=mess_id #ID of message in discord; int
-        update=update #function to call to update the message
+    def __init__(id=0,type=None,mess_id=0,update=None,role=None,content=None,emoji=None):
+        self.id=id #ID of the entry; int
+        self.type=type #for now "upcoming" or "project"
+        self.mess_id=mess_id #ID of message in discord; int
+        self.update=update #function to call to update the message
         #reaction=reaction #function to call when a reaction is added (clicked)
-        role=role # what role to add or remove
-        content=content #contents of the  message; text
-        emoji=emoji #list of tuples (emojies strings, function to call) to show at bottom of message. default to green_book red_book eye
+        self.role=role # what role to add or remove
+        self.content=content #contents of the  message; text
+        self.emoji=emoji #list of tuples (emojies strings, function to call) to show at bottom of message. default to green_book red_book eye
     
 
 entries=[]#array of Int_Mess
