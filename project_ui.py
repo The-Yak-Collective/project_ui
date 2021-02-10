@@ -59,6 +59,7 @@ message_channels=set()
 load_dotenv(HOMEDIR+"/"+'.env')
 TWEAK_CHAN=705512721847681035 #temporary
 EXP_CHAN=808415505856594001 #dashboard channel id
+PRJ_CHAN=809056759812587520 #ui for projects
 tweak_chan=0
 
 @bot.event #needed since it takes time to connect to discord
@@ -88,13 +89,13 @@ async def delete_all_messages(): #for now, only bot messages
         return m.author == bot.user
     c=bot.guilds[0].get_channel(EXP_CHAN) # switch to below the ###
     deleted = await c.purge(limit=20, check=is_me)
-    return
+    #return
     ###for when we actually use more channels
     for x in message_channels:
         deleted = await x.purge(limit=20, check=is_me)
     
 async def create_message(c): #c is name of channel we are working on
-    thec=bot.guilds[0].get_channel(EXP_CHAN)
+    thec=bot.guilds[0].get_channel(PRJ_CHAN)
     message_channels.add(thec)
     #await splitsend(thec,'create message {}'.format(c.name),False)
     #identify role
