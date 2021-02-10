@@ -157,13 +157,16 @@ async def detail_project(entry,rawreaction):
 #the following need to sleep so if you have multiple changes, it only happens once
 @bot.event
 async def on_guild_channel_delete(channel):
-    await init_bot()
+    if channel.category.name=="Projects":
+        await init_bot()
 @bot.event
 async def on_guild_channel_create(channel):
-    await init_bot()
+    if channel.category.name=="Projects":
+        await init_bot()
 @bot.event
 async def on_guild_channel_update(before, after):
-    await init_bot()
+    if before.category.name=="Projects" or after.category.name=="Projects":
+        await init_bot()
 
 
 @tasks.loop(seconds=600.0) #change to larger number as soon as we see this works. there is a rate limit 5 mess per channel in 5 sec
