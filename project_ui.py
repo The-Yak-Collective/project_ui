@@ -80,8 +80,9 @@ async def init_bot():
     await create_upcoming_message()
     x=bot.guilds[0].channels
     chanlist=[d for d in x if (d.category and d.category.name=="Projects")]
+    chanlistsorted=sorted(chanlist,key=lambda d: d.position)
     #not done yet - read existing roles and match to channels
-    for c in chanlist:
+    for c in chanlistsorted:
         await create_message(c)
     try:
         test_tick.cancel() #hope nothing stays hanging... problem if we have two running
