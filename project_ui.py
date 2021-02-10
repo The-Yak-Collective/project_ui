@@ -119,7 +119,7 @@ async def join_project(x,y):
 #try to join
     print("join ",x.name)
     clicker=bot.guilds[0].get_member(y.user_id)
-    s="{0} tried to join {1}".format(y.name,clicker.name)
+    s="{0} tried to join {1}".format(clicker.name, x.name)
     await splitsend(tweak_chan,s,False)
 
     pass
@@ -128,7 +128,7 @@ async def leave_project(x):
 #try to leave
     print("leave ",x.name)
     clicker=bot.guilds[0].get_member(y.user_id)
-    s="{0} tried to leave {1}".format(y.name,clicker.name)
+    s="{0} tried to leave {1}".format(clicker.name, x.name)
     await splitsend(tweak_chan,s,False)
     pass
     
@@ -136,7 +136,7 @@ async def detail_project(x):
 #try to get details
     print("details on ",x.name)
     clicker=bot.guilds[0].get_member(y.user_id)
-    s="{0} tried to get details on {1}".format(y.name,clicker.name)
+    s="{0} tried to get details on {1}".format(clicker.name, x.name)
     await splitsend(tweak_chan,s,False)
     pass
 
