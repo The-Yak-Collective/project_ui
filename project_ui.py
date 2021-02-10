@@ -94,13 +94,13 @@ async def create_message(c): #c is name of channel we are working on
 
 
 @bot.event
-async def on_guild_channel_delete(channel)
+async def on_guild_channel_delete(channel):
     await init_bot()
 @bot.event
-async def on_guild_channel_create(channel)
+async def on_guild_channel_create(channel):
     await init_bot()
 @bot.event
-async def on_guild_channel_update(before, after)
+async def on_guild_channel_update(before, after):
     await init_bot()
 
 
