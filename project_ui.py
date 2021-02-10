@@ -40,7 +40,7 @@ HOMEDIR="/home/yak"
 import sqlite3 
 
 class Int_Mess:
-    def __init__(id=0,type=None,mess_id=0,update=None,role=None,content=None,emoji=None):
+    def __init__(self, id=0,type=None,mess_id=0,update=None,role=None,content=None,emoji=None):
         self.id=id #ID of the entry; int
         self.type=type #for now "upcoming" or "project"
         self.mess_id=mess_id #ID of message in discord; int
