@@ -190,7 +190,7 @@ async def listchans(ctx):
     
 @bot.event
 async def on_raw_reaction_add(x):
-    if (x.user_id == bot.user)
+    if (x.user_id == bot.user):
         return # this happens while buuilding the messages
     print('got raw reaction',x, x.channel_id,x.message_id,x.emoji,x.user_id)
     whichproj=[p for p in entries if p.mess_id==x.message_id]
