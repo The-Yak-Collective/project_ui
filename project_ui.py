@@ -139,7 +139,7 @@ async def join_project(entry,rawreaction):
     s="{0} tried to join {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
     s="you tried to join the {} project; this feature is not supported yet".format(entry.name)
-    target=dmchan(rawreaction.user_id)
+    target=await dmchan(rawreaction.user_id)
     await splitsend(target,s,False)
 
     pass
@@ -151,7 +151,7 @@ async def leave_project(entry,rawreaction):
     s="{0} tried to leave {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
     s="you tried to leave the {} project; this feature is not supported yet".format(entry.name)
-    target=dmchan(rawreaction.user_id)
+    target=await dmchan(rawreaction.user_id)
     await splitsend(target,s,False)
     pass
     
@@ -162,7 +162,7 @@ async def detail_project(entry,rawreaction):
     s="{0} tried to get details on {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
     s="here we will have lots more details about the {} project, when we figure out where we are reading them from".format(entry.name)
-    target=dmchan(rawreaction.user_id)
+    target=await dmchan(rawreaction.user_id)
     await splitsend(target,s,False)
     pass
 
