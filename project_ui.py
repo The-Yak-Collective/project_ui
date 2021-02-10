@@ -190,7 +190,7 @@ async def listchans(ctx):
     
 @bot.event
 async def on_raw_reaction_add(x):
-    if (x.user_id == bot.user):
+    if (x.user_id == bot.user.id):
         return # this happens while buuilding the messages
     print('got raw reaction',x, x.channel_id,x.message_id,x.emoji,x.user_id)
     whichproj=[p for p in entries if p.mess_id==x.message_id]
@@ -201,7 +201,7 @@ async def on_raw_reaction_add(x):
     if em==[]:
         print("not right kind of emoji", whichproj[0].emoji)
         return
-    em[1](whichproj[0])
+    em[0][1](whichproj[0])
     await splitsend(tweak_chan,s,False)
     return
     
