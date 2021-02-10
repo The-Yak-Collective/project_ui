@@ -220,7 +220,8 @@ async def on_raw_reaction_add(x):
         return
     await em[0][1](whichproj[0],x)
     mess=await whichproj[0].chan.fetch_message(x.message_id)
-    await mess.remove_reaction(x.emoji,x.user_id)
+    mid=bot.guilds[0].get_member(x.user_id)
+    await mess.remove_reaction(x.emoji,mid)
     return
     
 
