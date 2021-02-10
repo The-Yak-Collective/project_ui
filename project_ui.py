@@ -113,7 +113,7 @@ async def create_message(c): #c is channel we are working on
     #identify role - when done, also add to int_mess
     pass
     roles=bot.guilds[0].roles
-    potential_roles=[r for r in roles if (r in c.name and len(r)>6)]
+    potential_roles=[r.name for r in roles if (r.name in c.name and len(r.name)>6)]
     potential_roles.sort(key=lambda d: -len(d))
     print(potential_roles,c.name,re.sub('[\W_-]',c.name))
     #generate content - for now using only local content, later knack or proj
