@@ -45,11 +45,11 @@ async def on_ready():
 
 @tasks.loop(seconds=600.0) #change to larger number as soon as we see this works. there is a rate limit 5 mess per channel in 5 sec
 async def test_tick():
-    print ("tick")
+    #print ("tick")
     await create_or_update_message()
 
 async def create_or_update_message():
-    thecontents="updated at {}".format(str(datetime.datetime.utcnow()))
+    thecontents="**updated every 10 min, last at** {} (UTC)".format(datetime.datetime.utcnow().strftime("%H:%M %b, %d %Y"))
     out = subprocess.Popen(['python3',HOMEDIR+'/robot/onboarding_robot/upcoming_command.py'], 
            stdout=subprocess.PIPE, 
            stderr=subprocess.STDOUT)
