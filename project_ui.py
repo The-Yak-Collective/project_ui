@@ -28,6 +28,7 @@ import time
 import datetime
 import emoji
 import subprocess
+import re, string
 
 
 from dotenv import load_dotenv
@@ -106,11 +107,15 @@ async def delete_all_messages(): #for now, only bot messages
     for x in message_channels:
         deleted = await x.purge(limit=40, check=is_me)
     
-async def create_message(c): #c is name of channel we are working on
+async def create_message(c): #c is channel we are working on
     thec=bot.guilds[0].get_channel(PRJ_CHAN)
     message_channels.add(thec)
     #identify role - when done, also add to int_mess
     pass
+    roles=bot.guilds[0].roles
+    potential_roles=[r for r in roles if (r in c.name and len(r)>6)]
+    potential_roles.sort(key=lambda d: -len(d))
+    print(potential_roles,c.name,re.sub('[\W_-]',c.name))
     #generate content - for now using only local content, later knack or proj
     txt=c.topic
     if not txt:
