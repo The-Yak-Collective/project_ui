@@ -115,7 +115,7 @@ async def create_message(c): #c is channel we are working on
     roles=bot.guilds[0].roles
     potential_roles=[r.name for r in roles if (r.name in c.name and len(r.name)>6)]
     potential_roles.sort(key=lambda d: -len(d))
-    print(potential_roles,c.name,re.sub('[^\w-]','',c.name))
+    #print(potential_roles,c.name,re.sub('[^\w-]','',c.name))
     #generate content - for now using only local content, later knack or proj
     txt=c.topic
     if not txt:
@@ -210,7 +210,7 @@ def upcoming_contents():
     return thecontents
     
 async def create_upcoming_message():
-    thecontents=upcoming_contents()
+    thecontents=upcoming_contents()+"\nlink to calendar: https://calendar.google.com/calendar?cid=bzk5NW00MzE3M2Jwc2xtaGg0OW5tcnA1aTRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ"
     c=bot.guilds[0].get_channel(EXP_CHAN)
     upcoming_mess=Int_Mess(id=0,typ="upcoming",name="upcoming",update=update_upcoming_message,content=thecontents,chan=c)
 
