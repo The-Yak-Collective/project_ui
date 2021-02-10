@@ -97,7 +97,7 @@ async def create_message(c): #c is name of channel we are working on
     #generate content - for now using only local content, later knack or proj
     thecontents="project **{0}**\n{1}\n<#{2}>".format(c.name,"no details yet",c.id)
     #generate entry
-    proj_mess=Int_Mess(id=0,type="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":no_bell:")),(":eye:",detail_project,emoji.emojize(":eye:"))],chan=thec)
+    proj_mess=Int_Mess(id=0,type="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:")),(":eye:",detail_project,emoji.emojize(":eye:"))],chan=thec)
     mess=await splitsend(thec,thecontents, False)
     proj_mess.mess_id=mess.id
     entries.append(proj_mess)
