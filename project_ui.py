@@ -40,10 +40,10 @@ HOMEDIR="/home/yak"
 import sqlite3 
 
 class Int_Mess:
-    def __init__(self, id=0,name=None,type=None,mess_id=0,update=None,role=None,content=None,emoji=None,chan=None):
+    def __init__(self, id=0,name=None,typ=None,mess_id=0,update=None,role=None,content=None,emoji=None,chan=None):
         self.id=id #ID of the entry; int
         self.name=name # name of teh project/message
-        self.type=type #for now "upcoming" or "project"
+        self.typ=typ #for now "upcoming" or "project"
         self.mess_id=mess_id #ID of message in discord; int
         self.update=update #function to call to update the message
         #reaction=reaction #function to call when a reaction is added (clicked)
@@ -81,7 +81,10 @@ async def init_bot():
     #not done yet - read existing roles and match to channels
     for c in chanlist:
         await create_message(c)
-    test_tick.cancel() #hope nothing stays hanging... problem if we have two running
+    try:
+        test_tick.cancel() #hope nothing stays hanging... problem if we have two running
+    except:
+        pass
     test_tick.start()
     
 async def delete_all_messages(): #for now, only bot messages
@@ -103,12 +106,12 @@ async def delete_all_messages(): #for now, only bot messages
 async def create_message(c): #c is name of channel we are working on
     thec=bot.guilds[0].get_channel(PRJ_CHAN)
     message_channels.add(thec)
-    #await splitsend(thec,'create message {}'.format(c.name),False)
-    #identify role
+    #identify role - when done, also add to int_mess
+    pass
     #generate content - for now using only local content, later knack or proj
     thecontents="project <#{0}>\n{1}".format(c.id,"no details yet")
     #generate entry
-    proj_mess=Int_Mess(id=0,type="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:")),(":eye:",detail_project,emoji.emojize(":eye:"))],chan=thec)
+    proj_mess=Int_Mess(id=0,typ="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:")),(":eye:",detail_project,emoji.emojize(":eye:"))],chan=thec)
     mess=await splitsend(thec,thecontents, False)
     proj_mess.mess_id=mess.id
     entries.append(proj_mess)
@@ -177,15 +180,15 @@ def upcoming_contents():
 async def create_upcoming_message():
     thecontents=upcoming_contents()
     c=bot.guilds[0].get_channel(EXP_CHAN)
-    upcoming_mess=Int_Mess(id=0,type="upcoming",name="upcoming",update=update_upcoming_message,content=thecontents,chan=c)
+    upcoming_mess=Int_Mess(id=0,typ="upcoming",name="upcoming",update=update_upcoming_message,content=thecontents,chan=c)
 
     mess=await splitsend(c,thecontents, False)
     upcoming_mess.mess_id=mess.id
     entries.append(upcoming_mess)
         
-async def update_upcoming_message(x):#x is message entry,not used here
+async def update_upcoming_message(y):#y is message entry,not used here
     thecontents=upcoming_contents()
-    x=[entry for entry in entries if entry.type=="upcoming"]
+    x=[entry for entry in entries if entry.typ=="upcoming"]
     x[0].content=thecontents
     c=x[0].chan
     mess=await c.fetch_message(x[0].mess_id)
@@ -203,15 +206,6 @@ async def project_uitest(ctx):
     return
     
 
-@bot.command(name='listchans', help='list project channels')
-async def listchans(ctx):
-    x=bot.guilds[0].channels
-    s=[d for d in x if (d.category and d.category.name=="Projects")]
-    s1=[d.category.name for d in x if d.category]
-    print('got to listchans', x,s, s1)
-    await splitsend(ctx.message.channel,s,False)
-    return
-    
 @bot.event
 async def on_raw_reaction_add(x):
     if (x.user_id == bot.user.id):
