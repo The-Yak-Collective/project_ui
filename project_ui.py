@@ -138,6 +138,9 @@ async def join_project(entry,rawreaction):
     print("clicker=", clicker)
     s="{0} tried to join {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
+    s="you tried to join the {} project; this feature is not supported yet".format(entry.name)
+    target=dmchan(rawreaction.user_id)
+    await splitsend(target,s,False)
 
     pass
     
@@ -147,6 +150,9 @@ async def leave_project(entry,rawreaction):
     clicker=bot.guilds[0].get_member(rawreaction.user_id)
     s="{0} tried to leave {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
+    s="you tried to leave the {} project; this feature is not supported yet".format(entry.name)
+    target=dmchan(rawreaction.user_id)
+    await splitsend(target,s,False)
     pass
     
 async def detail_project(entry,rawreaction):
@@ -155,6 +161,9 @@ async def detail_project(entry,rawreaction):
     clicker=bot.guilds[0].get_member(rawreaction.user_id)
     s="{0} tried to get details on {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
+    s="here we will have lots more details about the {} project, when we figure out where we are reading them from".format(entry.name)
+    target=dmchan(rawreaction.user_id)
+    await splitsend(target,s,False)
     pass
 
 #the following need to sleep so if you have multiple changes, it only happens once
