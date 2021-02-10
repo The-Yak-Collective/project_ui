@@ -219,6 +219,8 @@ async def on_raw_reaction_add(x):
         print("not right kind of emoji", whichproj[0].emoji)
         return
     await em[0][1](whichproj[0],x)
+    mess=await c.fetch_message(x.message_id)
+    await mess.remove_reaction(x.emoji,x.user_id)
     return
     
 
