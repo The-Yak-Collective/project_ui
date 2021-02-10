@@ -87,12 +87,18 @@ async def init_bot():
 async def delete_all_messages(): #for now, only bot messages
     def is_me(m):
         return m.author == bot.user
-    c=bot.guilds[0].get_channel(EXP_CHAN) # switch to below the ###
-    deleted = await c.purge(limit=20, check=is_me)
-    #return
+    c=bot.guilds[0].get_channel(EXP_CHAN) 
+    #deleted = await c.purge(limit=30, check=is_me)
+    message_channels.add(c)#needed because we need initial values when run first time
+    c=bot.guilds[0].get_channel(PRJ_CHAN) 
+    #deleted = await c.purge(limit=20, check=is_me)
+    message_channels.add(c)
+    c=bot.guilds[0].get_channel(TWEAK_CHAN) 
+    #deleted = await c.purge(limit=20, check=is_me)
+    message_channels.add(c)
     ###for when we actually use more channels
     for x in message_channels:
-        deleted = await x.purge(limit=20, check=is_me)
+        deleted = await x.purge(limit=40, check=is_me)
     
 async def create_message(c): #c is name of channel we are working on
     thec=bot.guilds[0].get_channel(PRJ_CHAN)
