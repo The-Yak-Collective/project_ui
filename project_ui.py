@@ -129,7 +129,7 @@ async def create_upcoming_message():
         
 async def update_upcoming_message():
     thecontents=upcoming_contents()
-    x=[entry for entry in entries if entry.type="upcoming"]
+    x=[entry for entry in entries if entry.type=="upcoming"]
     x[0].content=thecontents
     c=bot.guilds[0].get_channel(EXP_CHAN)
     mess=await c.fetch_message(x[0].mess_id)
