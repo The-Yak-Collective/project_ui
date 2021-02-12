@@ -82,7 +82,6 @@ async def init_bot():
     x=bot.guilds[0].channels
     chanlist=[d for d in x if (d.category and d.category.name=="Projects")]
     chanlistsorted=sorted(chanlist,key=lambda d: d.position)
-    #not done yet - read existing roles and match to channels
     for c in chanlistsorted:
         await create_message(c)
     try:
@@ -116,6 +115,7 @@ async def create_message(c): #c is channel we are working on
     potential_roles=[r.name for r in roles if (r.name in c.name and len(r.name)>6)]
     potential_roles.sort(key=lambda d: -len(d))
     #print(potential_roles,c.name,re.sub('[^\w-]','',c.name))
+    #guild.creat_role(name="new role name")
     #generate content - for now using only local content, later knack or proj
     txt=c.topic
     if not txt:
@@ -237,6 +237,16 @@ async def project_uitest(ctx):
     await splitsend(ctx.message.channel,s,False)
     return
     
+@bot.command(name='testembed', help='play with embed options')
+async def test_embed(ctx):
+    embed=discord.Embed(title="war on ideas", url="https://tinyurl.com/roamh1/134?_Final_Frontiers___Launch_Plan", description="a long description", color=0xd12323)
+    embed.add_field(name="field", value="[here](http://example.com)", inline=True)
+    embed.add_field(name=" ", value="[here and here and here and here and here](http://example.com)", inline=True)
+    embed.add_field(name=" ", value="<span style="color:red">some *red* text</span>", inline=False)
+    embed.add_field(name=" ", value="* sss", inline=False)
+    embed.add_field(name=" ", value="* [here](http://example.com)", inline=True)
+    embed.set_footer(text="[here](http://example.com)")
+    await ctx.send(embed=embed)
 
 @bot.event
 async def on_raw_reaction_add(x):
