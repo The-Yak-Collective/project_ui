@@ -241,10 +241,10 @@ async def project_uitest(ctx):
 async def test_embed(ctx):
     embed=discord.Embed(title="war on ideas", url="https://tinyurl.com/roamh1/134?_Final_Frontiers___Launch_Plan", description="a long description", color=0xd12323)
     embed.add_field(name="field", value="[here](http://example.com)", inline=True)
-    embed.add_field(name=" ", value="[here and here and here and here and here](http://example.com)", inline=True)
-    embed.add_field(name=" ", value='''<span style="color:red">some *red* text</span>''', inline=False)
-    embed.add_field(name=" ", value="* sss", inline=False)
-    embed.add_field(name=" ", value="* [here](http://example.com)", inline=True)
+    embed.add_field(name="\u00A0", value="[here and here and here and here and here](http://example.com)", inline=True)
+    embed.add_field(name="\u00A0", value='''<span style="color:red">some *red* text</span>''', inline=False)
+    embed.add_field(name="\u00A0", value="* sss", inline=False)
+    embed.add_field(name="\u00A0", value="* [here](http://example.com)", inline=True)
     embed.set_footer(text="[here](http://example.com)")
     await ctx.send(embed=embed)
 
