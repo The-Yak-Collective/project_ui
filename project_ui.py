@@ -271,6 +271,9 @@ async def on_raw_reaction_add(x):
 
 async def dmchan(t):
 #create DM channel betwen bot and user
+    print("at dmchan:",t)
+    if  not client.get_user(t):
+        return tweak_chan #answer in tweak if no dm - should never happen, of course
     target=bot.get_user(t)
     if (not target): 
         print("unable to find user and create dm",flush=True)
