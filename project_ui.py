@@ -185,13 +185,13 @@ async def on_guild_channel_create(channel):
 @bot.event
 async def on_guild_channel_update(before, after):
     global restart
-    if before.category.name=="Projects" or after.category.name=="Projects":
+    if (before.category and before.category.name=="Projects") or (after.category and after.category.name=="Projects"):
         restart=True #await init_bot()
 
 
 @tasks.loop(seconds=600.0) #change to larger number as soon as we see this works. there is a rate limit 5 mess per channel in 5 sec
 async def test_tick():
-    #print ("tick")
+    print ("tick")
     global restart #not clear why it is  needed, as restart defined way above
     if restart:
         restart=False
@@ -199,6 +199,7 @@ async def test_tick():
         return
     for x in entries:
         await x.update(x)
+    print("tock")
 
 def upcoming_contents():
     thecontents="**updated every 10 min, last at** {} (UTC)".format(datetime.datetime.utcnow().strftime("%H:%M %b, %d %Y"))
