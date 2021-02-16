@@ -61,6 +61,7 @@ load_dotenv(HOMEDIR+"/"+'.env')
 TWEAK_CHAN=705512721847681035 #temporary
 EXP_CHAN=808415505856594001 #dashboard channel id
 PRJ_CHAN=809056759812587520 #ui for projects
+PRJ_ID = 709766422259302411 #category id for project channels
 tweak_chan=0
 
 restart=False #do we restart in the 10 min loop due to change in projects
@@ -80,7 +81,7 @@ async def init_bot():
     message_channels=set()
     await create_upcoming_message()
     x=bot.guilds[0].channels
-    chanlist=[d for d in x if (d.category and d.category.name=="Projects")]
+    chanlist=[d for d in x if (d.category and d.category_id==PRJ_ID)]
     chanlistsorted=sorted(chanlist,key=lambda d: d.position)
     for c in chanlistsorted:
         await create_message(c)
@@ -175,17 +176,17 @@ async def detail_project(entry,rawreaction):
 @bot.event
 async def on_guild_channel_delete(channel):
     global restart
-    if channel.category.name=="Projects":
+    if channel.category_id==709766422259302411:
         restart=True #await init_bot()
 @bot.event
 async def on_guild_channel_create(channel):
     global restart
-    if channel.category.name=="Projects":
+    if channel.category_id==709766422259302411:
         restart=True #await init_bot()
 @bot.event
 async def on_guild_channel_update(before, after):
     global restart
-    if (before.category and before.category.name=="Projects") or (after.category and after.category.name=="Projects"):
+    if (before.category and before.category_id==709766422259302411) or (after.category and after.category_id==709766422259302411):
         restart=True #await init_bot()
 
 
