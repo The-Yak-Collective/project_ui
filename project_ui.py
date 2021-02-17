@@ -71,8 +71,13 @@ async def on_ready():
     global tweak_chan
     print('We have logged in as {0.user}'.format(bot),  bot.guilds)
     await init_bot() 
+    init_loop()
     tweak_chan=bot.guilds[0].get_channel(TWEAK_CHAN)
     return
+
+def init_loop():
+    test_tick.start()
+
 
 async def init_bot():
     global entries,message_channels
@@ -85,11 +90,6 @@ async def init_bot():
     chanlistsorted=sorted(chanlist,key=lambda d: d.position)
     for c in chanlistsorted:
         await create_message(c)
-    try:
-        test_tick.cancel() #hope nothing stays hanging... problem if we have two running
-    except:
-        pass
-    test_tick.start()
     
 async def delete_all_messages(): #for now, only bot messages
     def is_me(m):
