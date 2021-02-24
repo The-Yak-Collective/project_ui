@@ -149,8 +149,13 @@ async def join_project(entry,rawreaction):
     print("clicker=", clicker)
     s="{0} tried to join {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
-    s="you tried to join the {} project; this feature is not supported yet. but see what role it would be: ".format(entry.name)
+    s="you tried to join the {} project; this feature is not really supported yet. but see what role it would be: ".format(entry.name)
     newrole=chan2role(entry.name)
+    thenewrole = bot.utils.get(bot.guilds[0].roles, name=newrole)
+    if not thenewrole: #need to create one
+        print ("creating new role:"+newrole)
+        thenewrole=await guild.create_role(name=newrole)
+    await clicker.add_roles(thenewrole)
     target=await dmchan(rawreaction.user_id)
     await splitsend(target,s+newrole,False)
 
@@ -192,8 +197,11 @@ async def on_guild_channel_create(channel):
 @bot.event
 async def on_guild_channel_update(before, after):
     global restart
+    
     if (before.category and before.category_id==709766422259302411) or (after.category and after.category_id==709766422259302411):
         restart=True #await init_bot()
+        s="need to change role name from {0} to {1}".format(chan2name(before.name),chan2name(after.name))
+        await splitsend(tweak_chan,s,False)
 
 
 @tasks.loop(seconds=600.0) #change to larger number as soon as we see this works. there is a rate limit 5 mess per channel in 5 sec
