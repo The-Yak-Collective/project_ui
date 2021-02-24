@@ -210,8 +210,13 @@ async def on_guild_channel_update(before, after):
     
     if (before.category and before.category_id==709766422259302411) or (after.category and after.category_id==709766422259302411):
         restart=True #await init_bot()
-        s="need to change role name from {0} to {1}".format(chan2name(before.name),chan2name(after.name))
+        s="need to change role name from {0} to {1}. check if it worked.".format(chan2name(before.name),chan2name(after.name))
         await splitsend(tweak_chan,s,False)
+        therole = discord.utils.get(bot.guilds[0].roles, name=chan2name(before.name))
+        if therole: #if it doe snot exist, lets ignore issue
+            await therole.edit(name=chan2name(after.name))
+        else:
+            print("role did not exist!? "+chan2name(before.name)
 
 
 @tasks.loop(seconds=600.0) #change to larger number as soon as we see this works. there is a rate limit 5 mess per channel in 5 sec
