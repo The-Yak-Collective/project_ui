@@ -123,7 +123,7 @@ async def create_message(c): #c is channel we are working on
         txt="No description yet"
     thecontents="<#{0}>\n{1}".format(c.id,txt)
     #generate entry
-    proj_mess=Int_Mess(id=0,typ="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:")),(":information_source:",detail_project,emoji.emojize(":information_source:"))],chan=thec) #:information_source: was :eye:
+    proj_mess=Int_Mess(id=0,typ="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:")),(":information:",detail_project,emoji.emojize(":information:"))],chan=thec) #:information_source: was :eye:
     mess=await splitsend(thec,thecontents, False)
     proj_mess.mess_id=mess.id
     entries.append(proj_mess)
