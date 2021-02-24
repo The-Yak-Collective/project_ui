@@ -151,7 +151,7 @@ async def join_project(entry,rawreaction):
     await splitsend(tweak_chan,s,False)
     s="you tried to join the {} project; this feature is not really supported yet. but see what role it would be: ".format(entry.name)
     newrole=chan2role(entry.name)
-    thenewrole = bot.utils.get(bot.guilds[0].roles, name=newrole)
+    thenewrole = discord.utils.get(bot.guilds[0].roles, name=newrole)
     if not thenewrole: #need to create one
         print ("creating new role:"+newrole)
         thenewrole=await guild.create_role(name=newrole)
