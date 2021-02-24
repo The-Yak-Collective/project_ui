@@ -216,7 +216,7 @@ async def on_guild_channel_update(before, after):
         if therole: #if it doe snot exist, lets ignore issue
             await therole.edit(name=chan2name(after.name))
         else:
-            print("role did not exist!? "+chan2name(before.name)
+            print("role did not exist!? "+chan2name(before.name))
 
 
 @tasks.loop(seconds=600.0) #change to larger number as soon as we see this works. there is a rate limit 5 mess per channel in 5 sec
