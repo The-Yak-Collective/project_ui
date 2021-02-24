@@ -123,7 +123,7 @@ async def create_message(c): #c is channel we are working on
         txt="No description yet"
     thecontents="<#{0}>\n{1}".format(c.id,txt)
     #generate entry
-    proj_mess=Int_Mess(id=0,typ="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:")),(":eye:",detail_project,emoji.emojize(":eye:"))],chan=thec)
+    proj_mess=Int_Mess(id=0,typ="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:")),(":information_source:",detail_project,emoji.emojize(":information_source:"))],chan=thec) #:information_source: was :eye:
     mess=await splitsend(thec,thecontents, False)
     proj_mess.mess_id=mess.id
     entries.append(proj_mess)
@@ -136,7 +136,12 @@ async def create_message(c): #c is channel we are working on
 async def update_project_message(x):
 #will update project contents, when we have real data to show...
     pass
-    
+
+def chan2role(x):
+    newrole=re.sub('^[^0-9a-z]*-','',x)
+    newrole=re.sub('-[^0-9a-z]*$','',newrole)
+    return newrole
+
 async def join_project(entry,rawreaction):
 #try to join
     print("join ",entry.name)
@@ -144,9 +149,10 @@ async def join_project(entry,rawreaction):
     print("clicker=", clicker)
     s="{0} tried to join {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
-    s="you tried to join the {} project; this feature is not supported yet".format(entry.name)
+    s="you tried to join the {} project; this feature is not supported yet. but see what role it would be: ".format(entry.name)
+    newrole=chan2role(entry.name)
     target=await dmchan(rawreaction.user_id)
-    await splitsend(target,s,False)
+    await splitsend(target,s+newrole,False)
 
     pass
     
