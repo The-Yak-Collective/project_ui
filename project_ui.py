@@ -238,7 +238,7 @@ def upcoming_contents():
            stderr=subprocess.STDOUT)
     stdout,stderr = out.communicate()
     thecontents=thecontents+'\n'+str(stdout,"utf-8").replace("\\n",'\n')
-    return thecontents+"View and subscribe to using Google Calendar:\nhttps://calendar.google.com/calendar/u/0/embed?src=o995m43173bpslmhh49nmrp5i4@group.calendar.google.com"
+    return thecontents+"View and subscribe using Google Calendar:\nhttps://calendar.google.com/calendar/u/0/embed?src=o995m43173bpslmhh49nmrp5i4@group.calendar.google.com"
     
 async def create_upcoming_message():
     thecontents=upcoming_contents()
