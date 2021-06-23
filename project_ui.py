@@ -61,6 +61,8 @@ load_dotenv(HOMEDIR+"/"+'.env')
 TWEAK_CHAN=705512721847681035 #temporary
 EXP_CHAN=808415505856594001 #dashboard channel id
 PRJ_CHAN=809056759812587520 #ui for projects
+INC_ID=738570200190025738 #incubator catagory
+GRP_ID=832701885395763210 #study groups catagory
 PRJ_ID = 709766422259302411 #category id for project channels
 tweak_chan=0
 
@@ -86,7 +88,7 @@ async def init_bot():
     message_channels=set()
     await create_upcoming_message()
     x=bot.guilds[0].channels
-    chanlist=[d for d in x if (d.category and d.category_id==PRJ_ID)]
+    chanlist=[d for d in x if (d.category and d.category_id in [PRJ_ID,GRP_ID,INC_ID])]
     chanlistsorted=sorted(chanlist,key=lambda d: d.position)
     for c in chanlistsorted:
         await create_message(c)
@@ -123,7 +125,7 @@ async def create_message(c): #c is channel we are working on
         txt="No description yet"
     thecontents="<#{0}>\n{1}".format(c.id,txt)
     #generate entry
-    proj_mess=Int_Mess(id=0,typ="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:")),(":information:",detail_project,emoji.emojize(":information:"))],chan=thec) #:information_source: was :eye:
+    proj_mess=Int_Mess(id=0,typ="project",name=c.name,update=update_project_message,content=thecontents,emoji=[(":bell:",join_project,emoji.emojize(":bell:")),(":bell_with_slash:",leave_project,emoji.emojize(":bell_with_slash:"))],chan=thec) #:information_source: was :eye: #deleted, for now ,(":information:",detail_project,emoji.emojize(":information:"))
     mess=await splitsend(thec,thecontents, False)
     proj_mess.mess_id=mess.id
     entries.append(proj_mess)
