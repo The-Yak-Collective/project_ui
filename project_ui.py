@@ -156,7 +156,7 @@ async def join_project(entry,rawreaction):
     thenewrole = discord.utils.get(bot.guilds[0].roles, name=newrole)
     if not thenewrole: #need to create one
         print ("creating new role:"+newrole)
-        thenewrole=await guild.create_role(name=newrole)
+        thenewrole=await bot.guilds[0].create_role(name=newrole)
     await clicker.add_roles(thenewrole)
     target=await dmchan(rawreaction.user_id)
     await splitsend(target,s,False)
