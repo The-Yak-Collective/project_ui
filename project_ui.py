@@ -151,7 +151,7 @@ async def join_project(entry,rawreaction):
     print("clicker=", clicker)
     s="{0} tried to join {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
-    s="The role of the {} project was added to your user; please note that this feature is under testing; please report any bugs ".format(entry.name)
+    s="You’ve chosen to receive notifications for the {} project.\n (Please note that this feature is under testing; please report any bugs to @Maier (U+2), thanks)".format(entry.name)
     newrole=chan2role(entry.name)
     thenewrole = discord.utils.get(bot.guilds[0].roles, name=newrole)
     if not thenewrole: #need to create one
@@ -169,7 +169,7 @@ async def leave_project(entry,rawreaction):
     clicker=bot.guilds[0].get_member(rawreaction.user_id)
     s="{0} tried to leave {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
-    s="The role of the {} project has been removed; this feature is under testing, please report any bugs".format(entry.name)
+    s="The notifications for and role of  the {} project have been removed; this feature is under testing, please report any bugs to @Maier (U+2)".format(entry.name)
     newrole=chan2role(entry.name)
     thenewrole = discord.utils.get(bot.guilds[0].roles, name=newrole)
     if not thenewrole: #need to create one
