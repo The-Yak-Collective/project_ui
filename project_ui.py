@@ -151,7 +151,7 @@ async def join_project(entry,rawreaction):
     print("clicker=", clicker)
     s="{0} tried to join {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
-    s="you tried to join the {} project; this feature is under testing: ".format(entry.name)
+    s="The role of the {} project was added to your user; please note that this feature is under testing; please report any bugs ".format(entry.name)
     newrole=chan2role(entry.name)
     thenewrole = discord.utils.get(bot.guilds[0].roles, name=newrole)
     if not thenewrole: #need to create one
@@ -159,7 +159,7 @@ async def join_project(entry,rawreaction):
         thenewrole=await guild.create_role(name=newrole)
     await clicker.add_roles(thenewrole)
     target=await dmchan(rawreaction.user_id)
-    await splitsend(target,s+newrole,False)
+    await splitsend(target,s,False)
 
     pass
     
@@ -169,7 +169,7 @@ async def leave_project(entry,rawreaction):
     clicker=bot.guilds[0].get_member(rawreaction.user_id)
     s="{0} tried to leave {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
-    s="you tried to leave the {} project; this feature is under testing".format(entry.name)
+    s="The role of the {} project has been removed; this feature is under testing, please report any bugs".format(entry.name)
     newrole=chan2role(entry.name)
     thenewrole = discord.utils.get(bot.guilds[0].roles, name=newrole)
     if not thenewrole: #need to create one
@@ -297,6 +297,7 @@ async def on_raw_reaction_add(x):
     await em[0][1](whichproj[0],x)
     mess=await whichproj[0].chan.fetch_message(x.message_id)
     mid=bot.guilds[0].get_member(x.user_id)
+    print("ready to remove emoji")
     await mess.remove_reaction(x.emoji,mid)
     return
     
