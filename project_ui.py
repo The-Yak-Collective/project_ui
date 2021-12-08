@@ -157,6 +157,12 @@ async def join_project(entry,rawreaction):
     if not thenewrole: #need to create one
         print ("creating new role:"+newrole)
         thenewrole=await bot.guilds[0].create_role(name=newrole)
+        try:
+            chan=get(bot.guild[0].channels,name=entry.name)
+            perm=discord.PermissionOverwrite(read_messages=True, send_messages=True)
+            await bot.edit_channel_permissions(chan, thenewrole, perm)
+        except:
+            print("failed to link newly created role to channel. oh well.")
     await clicker.add_roles(thenewrole)
     target=await dmchan(rawreaction.user_id)
     await splitsend(target,s,False)
