@@ -71,7 +71,7 @@ restart=False #do we restart in the 10 min loop due to change in projects
 @bot.event #needed since it takes time to connect to discord
 async def on_ready(): 
     global tweak_chan
-    print('We have logged in as {0.user}'.format(bot),  bot.guilds)
+    print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nWe have logged in as {0.user}".format(bot),  bot.guilds)
     await init_bot() 
     init_loop()
     tweak_chan=bot.guilds[0].get_channel(TWEAK_CHAN)
@@ -146,9 +146,9 @@ def chan2role(x):
 
 async def join_project(entry,rawreaction):
 #try to join
-    print("join ",entry.name)
+    print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\njoin ",entry.name)
     clicker=bot.guilds[0].get_member(rawreaction.user_id)
-    print("clicker=", clicker)
+    print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nclicker=", clicker)
     s="{0} tried to join {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
     s="You’ve chosen to have a role added for the {} project. This may involve notifications or other actions.\n (Please note that this feature is under testing; please report any bugs to @Maier (U+2), thanks)".format(entry.name)
@@ -162,7 +162,7 @@ async def join_project(entry,rawreaction):
             perm=discord.PermissionOverwrite(read_messages=True, send_messages=True)
             await bot.edit_channel_permissions(chan, thenewrole, perm)
         except:
-            print("failed to link newly created role to channel. oh well.")
+            print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nfailed to link newly created role to channel. oh well.")
     await clicker.add_roles(thenewrole)
     target=await dmchan(rawreaction.user_id)
     await splitsend(target,s,False)
@@ -171,7 +171,7 @@ async def join_project(entry,rawreaction):
     
 async def leave_project(entry,rawreaction):
 #try to leave
-    print("leave ",entry.name)
+    print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nleave ",entry.name)
     clicker=bot.guilds[0].get_member(rawreaction.user_id)
     s="{0} tried to leave {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
@@ -184,7 +184,7 @@ async def leave_project(entry,rawreaction):
     if thenewrole in clicker.roles:
         await clicker.remove_roles(thenewrole)
     else:
-        print("you seem to not have this role"+newrole)
+        print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nyou seem to not have this role"+newrole)
 
     target=await dmchan(rawreaction.user_id)
     await splitsend(target,s,False)
@@ -192,7 +192,7 @@ async def leave_project(entry,rawreaction):
     
 async def detail_project(entry,rawreaction):
 #try to get details
-    print("details on ",entry.name)
+    print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\ndetails on ",entry.name)
     clicker=bot.guilds[0].get_member(rawreaction.user_id)
     s="{0} tried to get details on {1}".format(clicker.name, entry.name)
     await splitsend(tweak_chan,s,False)
@@ -224,7 +224,7 @@ async def on_guild_channel_update(before, after):
         if therole: #if it doe snot exist, lets ignore issue
             await therole.edit(name=chan2name(after.name))
         else:
-            print("role did not exist!? "+chan2name(before.name))
+            print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nrole did not exist!? "+chan2name(before.name))
 
 
 @tasks.loop(seconds=600.0) #change to larger number as soon as we see this works. there is a rate limit 5 mess per channel in 5 sec
@@ -237,7 +237,7 @@ async def test_tick():
         return
     for x in entries:
         await x.update(x)
-    print("tock")
+    print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\ntock")
 
 def upcoming_contents():
     thecontents="**updated every 10 min, last at** {} (UTC)".format(datetime.datetime.utcnow().strftime("%H:%M %b, %d %Y"))
@@ -272,7 +272,7 @@ async def update_upcoming_message(y):#y is message entry,not used here
 @bot.command(name='uitest', help='a test response')
 async def project_uitest(ctx):
     s='this is a test response from project_ui bot in bot mode'
-    print('got here')
+    print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\ngot here")
     await splitsend(ctx.message.channel,s,False)
     return
     
@@ -291,19 +291,19 @@ async def test_embed(ctx):
 async def on_raw_reaction_add(x):
     if (x.user_id == bot.user.id):
         return # this happens while buuilding the messages
-    print('got raw reaction',x, x.channel_id,x.message_id,x.emoji,x.user_id)
+    print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\ngot raw reaction",x, x.channel_id,x.message_id,x.emoji,x.user_id)
     whichproj=[p for p in entries if p.mess_id==x.message_id]
     if whichproj==[]:
-        print("not on my messages")
+        print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nnot on my messages")
         return
     em=[e for e in whichproj[0].emoji if e[2]==x.emoji.name]
     if em==[]:
-        print("not right kind of emoji", whichproj[0].emoji)
+        print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nnot right kind of emoji", whichproj[0].emoji)
         return
     await em[0][1](whichproj[0],x)
     mess=await whichproj[0].chan.fetch_message(x.message_id)
     mid=bot.guilds[0].get_member(x.user_id)
-    print("ready to remove emoji")
+    print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nready to remove emoji")
     await mess.remove_reaction(x.emoji,mid)
     return
     
@@ -311,16 +311,16 @@ async def on_raw_reaction_add(x):
 
 async def dmchan(t):
 #create DM channel betwen bot and user
-    print("at dmchan:",t)
+    print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nat dmchan:",t)
     if  not bot.get_user(t):
         return tweak_chan #answer in tweak if no dm - should never happen, of course
     target=bot.get_user(t)
     if (not target): 
-        print("unable to find user and create dm",flush=True)
+        print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nunable to find user and create dm",flush=True)
     return target
     target=target.dm_channel
     if (not target): 
-        print("need to create dm channel",flush=True)
+        print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\nneed to create dm channel",flush=True)
         target=await bot.get_user(t).create_dm()
     return target
 
