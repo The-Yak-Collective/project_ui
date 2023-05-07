@@ -62,7 +62,7 @@ TWEAK_CHAN=705512721847681035 #temporary
 EXP_CHAN=808415505856594001 #dashboard channel id
 PRJ_CHAN=809056759812587520 #ui for projects
 INC_ID=738570200190025738 #incubator catagory
-GRP_ID=832701885395763210 #study groups catagory
+GRP_ID=980526550397104158 # 832701885395763210 #study groups catagory
 PRJ_ID = 709766422259302411 #category id for project channels
 tweak_chan=0
 
