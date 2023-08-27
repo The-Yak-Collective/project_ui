@@ -4,7 +4,6 @@
 #logic:
 #when run, starts by:
 #   deletes all messages in dashboard
-#   creates new upcoming message
 #   gets list of channels
 #   creates new message for each channel based on channel name and "other data sources" if any. for now, none! later, use $proj interface?
 #   message includes name, blank text) channel (with #) and role:
@@ -44,7 +43,7 @@ class Int_Mess:
     def __init__(self, id=0,name=None,typ=None,mess_id=0,update=None,role=None,content=None,emoji=None,chan=None):
         self.id=id #ID of the entry; int
         self.name=name # name of teh project/message
-        self.typ=typ #for now "upcoming" or "project"
+        self.typ=typ #for now "project"
         self.mess_id=mess_id #ID of message in discord; int
         self.update=update #function to call to update the message
         #reaction=reaction #function to call when a reaction is added (clicked)
@@ -59,7 +58,6 @@ message_channels=set()
 
 load_dotenv(HOMEDIR+"/"+'.env')
 TWEAK_CHAN=705512721847681035 #temporary
-EXP_CHAN=808415505856594001 #dashboard channel id
 PRJ_CHAN=809056759812587520 #ui for projects
 INC_ID=738570200190025738 #incubator catagory
 GRP_ID=980526550397104158 # 832701885395763210 #study groups catagory
@@ -86,7 +84,6 @@ async def init_bot():
     await delete_all_messages()
     entries=[]
     message_channels=set()
-    await create_upcoming_message()
     x=bot.guilds[0].channels
     chanlist=[d for d in x if (d.category and d.category_id in [PRJ_ID,GRP_ID,INC_ID])]
     chanlistsorted=sorted(chanlist,key=lambda d: d.position)
@@ -96,9 +93,6 @@ async def init_bot():
 async def delete_all_messages(): #for now, only bot messages
     def is_me(m):
         return m.author == bot.user
-    c=bot.guilds[0].get_channel(EXP_CHAN) 
-    #deleted = await c.purge(limit=30, check=is_me)
-    message_channels.add(c)#needed because we need initial values when run first time
     c=bot.guilds[0].get_channel(PRJ_CHAN) 
     #deleted = await c.purge(limit=20, check=is_me)
     message_channels.add(c)
@@ -238,33 +232,6 @@ async def test_tick():
     for x in entries:
         await x.update(x)
     print("---\n[" + datetime.datetime.now().astimezone().replace(microsecond=0).isoformat() + "]\ntock")
-
-def upcoming_contents():
-    thecontents="**updated every 10 min, last at** {} (UTC)".format(datetime.datetime.utcnow().strftime("%H:%M %b, %d %Y"))
-    out = subprocess.Popen(['python3',HOMEDIR+'/robot/onboarding_robot/upcoming_command.py'], 
-           stdout=subprocess.PIPE, 
-           stderr=subprocess.STDOUT)
-    stdout,stderr = out.communicate()
-    thecontents=thecontents+'\n'+str(stdout,"utf-8").replace("\\n",'\n')
-    return thecontents+"View and subscribe using Google Calendar:\nhttps://calendar.google.com/calendar/u/0/embed?src=o995m43173bpslmhh49nmrp5i4@group.calendar.google.com"
-    
-async def create_upcoming_message():
-    thecontents=upcoming_contents()
-    c=bot.guilds[0].get_channel(EXP_CHAN)
-    upcoming_mess=Int_Mess(id=0,typ="upcoming",name="upcoming",update=update_upcoming_message,content=thecontents,chan=c)
-
-    mess=await splitsend(c,thecontents, False)
-    upcoming_mess.mess_id=mess.id
-    entries.append(upcoming_mess)
-        
-async def update_upcoming_message(y):#y is message entry,not used here
-    thecontents=upcoming_contents()
-    x=[entry for entry in entries if entry.typ=="upcoming"]
-    x[0].content=thecontents
-    c=x[0].chan
-    mess=await c.fetch_message(x[0].mess_id)
-    await mess.edit(content=thecontents)
-
 
 #@bot.event #seems event eats the events that command uses. but it is not really needed, either
 # fix is to add await bot.process_commands(message) at the end
